@@ -1,0 +1,19 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net5.0-windows</TargetFramework>
+    <UseWPF>true</UseWPF>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="Assets\encryption_logo_black.png" />
+    <None Remove="Assets\table_white.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Assets\encryption_logo_black.png" />
+    <Resource Include="Assets\table_white.png" />
+  </ItemGroup>
+
+</Project>

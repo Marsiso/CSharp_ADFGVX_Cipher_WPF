@@ -1,0 +1,715 @@
+﻿<Window
+    x:Class="CSharp_ADFGVX_Cipher_WPF.Views.MyWindowView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:models="clr-namespace:CSharp_ADFGVX_Cipher_WPF.Models"
+    mc:Ignorable="d">
+
+    <Window.Style>
+        <Style TargetType="Window">
+            <Setter Property="Background" Value="White" />
+            <Setter Property="Foreground" Value="Black" />
+            <Setter Property="FontSize" Value="12" />
+            <Setter Property="FontWeight" Value="Bold" />
+            <Setter Property="Title" Value="ADFG(V)X Cipher" />
+            <Setter Property="Icon" Value="C:\Users\molsak\source\repos\CSharp_ADFGVX_Cipher_WPF\CSharp_ADFGVX_Cipher_WPF\Assets\encryption_logo_black.png" />
+            <Setter Property="MinWidth" Value="1200" />
+            <Setter Property="MinHeight" Value="800" />
+            <!--<Setter Property="UseLayoutRounding" Value="False"/>-->
+        </Style>
+    </Window.Style>
+
+    <Window.DataContext>
+        <models:MyWindowModel x:Name="myWindowModel" />
+    </Window.DataContext>
+
+    <Window.Resources>
+        <!--  GRID BASE  -->
+        <Style x:Key="StyleGridBase" TargetType="Grid">
+            <Setter Property="Background" Value="White" />
+            <Setter Property="Margin" Value="5" />
+            <Setter Property="HorizontalAlignment" Value="Stretch" />
+            <Setter Property="VerticalAlignment" Value="Stretch" />
+        </Style>
+        <!--  TEXTBOX SUBSTBL  -->
+        <Style x:Key="StyleTxtBoxSubsTbl" TargetType="TextBox">
+            <Setter Property="Background" Value="White" />
+            <Setter Property="Foreground" Value="Black" />
+            <Setter Property="FontSize" Value="16" />
+            <Setter Property="FontWeight" Value="Bold" />
+            <Setter Property="ClipToBounds" Value="True" />
+            <Setter Property="HorizontalAlignment" Value="Stretch" />
+            <Setter Property="VerticalAlignment" Value="Stretch" />
+            <Setter Property="TextAlignment" Value="Center" />
+            <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+            <Setter Property="VerticalContentAlignment" Value="Stretch" />
+            <Setter Property="MaxLength" Value="1" />
+            <Setter Property="MaxLines" Value="1" />
+            <Setter Property="Width" Value="20" />
+            <Setter Property="BorderBrush" Value="DarkBlue" />
+        </Style>
+        <!--  GRIDVIEWCOLUMNHEADER  -->
+        <Style x:Key="StyleGridViewColHeader" TargetType="GridViewColumnHeader">
+            <Setter Property="HorizontalAlignment" Value="Center" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+            <Setter Property="Background" Value="White" />
+            <Setter Property="Foreground" Value="DarkBlue" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="BorderBrush" Value="White" />
+            <Setter Property="FontSize" Value="16" />
+            <Setter Property="FontWeight" Value="Bold" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="BorderBrush" Value="Transparent" />
+            <Setter Property="Focusable" Value="False" />
+            <Setter Property="IsHitTestVisible" Value="False" />
+        </Style>
+        <!--  STYLECOMBOBOX  -->
+        <Style x:Key="StyleComboBox" TargetType="ComboBox">
+            <Setter Property="Width" Value="40" />
+            <Setter Property="HorizontalContentAlignment" Value="Left" />
+            <Setter Property="VerticalContentAlignment" Value="Center" />
+            <Setter Property="Background" Value="White" />
+            <Setter Property="Foreground" Value="Black" />
+            <Setter Property="InputScope" Value="OneChar" />
+        </Style>
+    </Window.Resources>
+
+    <!--#region WINDOW GRID-->
+    <Grid>
+        <Grid.Style>
+            <Style BasedOn="{StaticResource StyleGridBase}" TargetType="Grid" />
+        </Grid.Style>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <!--#region KEYWORD-->
+        <Grid Grid.Row="0" Grid.Column="0">
+            <Grid.Style>
+                <Style BasedOn="{StaticResource StyleGridBase}" TargetType="Grid" />
+            </Grid.Style>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+
+            <Label
+                Grid.Row="0"
+                Grid.Column="0"
+                Content="KEYWORD">
+                <Label.Style>
+                    <Style TargetType="Label">
+                        <Setter Property="Background" Value="DarkBlue" />
+                        <Setter Property="Foreground" Value="White" />
+                        <Setter Property="FontSize" Value="16" />
+                        <Setter Property="FontWeight" Value="Bold" />
+                        <Setter Property="BorderThickness" Value="1" />
+                        <Setter Property="BorderBrush" Value="Black" />
+                        <Setter Property="ClipToBounds" Value="True" />
+                        <Setter Property="HorizontalAlignment" Value="Stretch" />
+                        <Setter Property="VerticalAlignment" Value="Stretch" />
+                        <Setter Property="Focusable" Value="False" />
+                    </Style>
+                </Label.Style>
+            </Label>
+
+            <TextBox
+                x:Name="TextBoxKeyWord"
+                Grid.Row="0"
+                Grid.Column="1"
+                KeyDown="TextBoxKeyWord_KeyDown">
+                <TextBox.Style>
+                    <Style TargetType="TextBox">
+                        <Setter Property="Background" Value="White" />
+                        <Setter Property="Foreground" Value="Black" />
+                        <Setter Property="FontSize" Value="16" />
+                        <Setter Property="MaxLines" Value="1" />
+                        <Setter Property="TextWrapping" Value="Wrap" />
+                        <Setter Property="CharacterCasing" Value="Upper" />
+                        <Setter Property="InputScope" Value="Default" />
+                        <Setter Property="BorderBrush" Value="Black" />
+                        <Setter Property="BorderThickness" Value="1" />
+                        <Setter Property="ClipToBounds" Value="True" />
+                        <Setter Property="HorizontalAlignment" Value="Stretch" />
+                        <Setter Property="VerticalAlignment" Value="Stretch" />
+                        <Setter Property="HorizontalContentAlignment" Value="Left" />
+                        <Setter Property="VerticalContentAlignment" Value="Center" />
+                        <Setter Property="IsReadOnly" Value="False" />
+                        <Setter Property="Text" Value="{Binding KeyWord, Mode=TwoWay}" />
+                        <Style.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="IsHitTestVisible" Value="True" />
+                            </Trigger>
+                        </Style.Triggers>
+                    </Style>
+                </TextBox.Style>
+            </TextBox>
+        </Grid>
+        <!--#endregion-->
+
+        <!--#region SUBSTITUTION TABLE & FILTER TABLE-->
+        <Grid Grid.Row="1" Grid.Column="0">
+            <Grid.Style>
+                <Style BasedOn="{StaticResource StyleGridBase}" TargetType="Grid" />
+            </Grid.Style>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="130" />
+                <ColumnDefinition Width="130" />
+                <ColumnDefinition Width="130" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+
+            <Label
+                Grid.Row="0"
+                Grid.Column="0"
+                Content="SUBSTITUTION TABLE">
+                <Label.Style>
+                    <Style TargetType="Label">
+                        <Setter Property="Background" Value="DarkBlue" />
+                        <Setter Property="Foreground" Value="White" />
+                        <Setter Property="FontSize" Value="16" />
+                        <Setter Property="FontWeight" Value="Bold" />
+                        <Setter Property="BorderThickness" Value="1" />
+                        <Setter Property="BorderBrush" Value="DarkBlue" />
+                        <Setter Property="ClipToBounds" Value="True" />
+                        <Setter Property="HorizontalAlignment" Value="Stretch" />
+                        <Setter Property="VerticalAlignment" Value="Stretch" />
+                        <Setter Property="HorizontalContentAlignment" Value="Center" />
+                        <Setter Property="VerticalContentAlignment" Value="Center" />
+                        <Setter Property="Focusable" Value="False" />
+                    </Style>
+                </Label.Style>
+            </Label>
+
+            <Label
+                Grid.Row="0"
+                Grid.Column="1"
+                Content="SIZE">
+                <Label.Style>
+                    <Style TargetType="Label">
+                        <Setter Property="Background" Value="DarkBlue" />
+                        <Setter Property="Foreground" Value="White" />
+                        <Setter Property="FontSize" Value="16" />
+                        <Setter Property="FontWeight" Value="Bold" />
+                        <Setter Property="BorderThickness" Value="1" />
+                        <Setter Property="BorderBrush" Value="DarkBlue" />
+                        <Setter Property="ClipToBounds" Value="True" />
+                        <Setter Property="HorizontalAlignment" Value="Stretch" />
+                        <Setter Property="VerticalAlignment" Value="Stretch" />
+                        <Setter Property="HorizontalContentAlignment" Value="Center" />
+                        <Setter Property="VerticalContentAlignment" Value="Center" />
+                        <Setter Property="Focusable" Value="False" />
+                    </Style>
+                </Label.Style>
+            </Label>
+
+            <StackPanel Grid.Row="1" Grid.Column="1">
+                <Button x:Name="ButtonIncrease" Click="ButtonIncrease_Click">
+                    <Button.Style>
+                        <Style TargetType="Button">
+                            <Setter Property="Content" Value="6" />
+                            <Setter Property="FontSize" Value="16" />
+                            <Setter Property="FontWeight" Value="Bold" />
+                            <Setter Property="Background" Value="OliveDrab" />
+                            <Setter Property="Foreground" Value="White" />
+                            <Setter Property="BorderBrush" Value="DarkBlue" />
+                            <Setter Property="BorderThickness" Value="1" />
+                            <Setter Property="HorizontalContentAlignment" Value="Center" />
+                            <Setter Property="VerticalContentAlignment" Value="Center" />
+                        </Style>
+                    </Button.Style>
+                </Button>
+
+                <Button x:Name="ButtonDecrease" Click="ButtonDecrease_Click">
+                    <Button.Style>
+                        <Style TargetType="Button">
+                            <Setter Property="Content" Value="5" />
+                            <Setter Property="FontSize" Value="16" />
+                            <Setter Property="FontWeight" Value="Bold" />
+                            <Setter Property="Background" Value="PaleVioletRed" />
+                            <Setter Property="Foreground" Value="White" />
+                            <Setter Property="BorderBrush" Value="DarkBlue" />
+                            <Setter Property="BorderThickness" Value="1" />
+                            <Setter Property="HorizontalContentAlignment" Value="Center" />
+                            <Setter Property="VerticalContentAlignment" Value="Center" />
+                        </Style>
+                    </Button.Style>
+                </Button>
+            </StackPanel>
+
+            <Label
+                Grid.Row="0"
+                Grid.Column="2"
+                Content="GENERATE">
+                <Label.Style>
+                    <Style TargetType="Label">
+                        <Setter Property="Background" Value="DarkBlue" />
+                        <Setter Property="Foreground" Value="White" />
+                        <Setter Property="FontSize" Value="16" />
+                        <Setter Property="FontWeight" Value="Bold" />
+                        <Setter Property="BorderThickness" Value="1" />
+                        <Setter Property="BorderBrush" Value="DarkBlue" />
+                        <Setter Property="ClipToBounds" Value="True" />
+                        <Setter Property="HorizontalAlignment" Value="Stretch" />
+                        <Setter Property="VerticalAlignment" Value="Stretch" />
+                        <Setter Property="HorizontalContentAlignment" Value="Center" />
+                        <Setter Property="VerticalContentAlignment" Value="Center" />
+                        <Setter Property="Focusable" Value="False" />
+                    </Style>
+                </Label.Style>
+            </Label>
+
+            <StackPanel Grid.Row="1" Grid.Column="2">
+                <Button x:Name="ButtonRandom" Click="ButtonRandom_Click">
+                    <Button.Style>
+                        <Style TargetType="Button">
+                            <Setter Property="Content" Value="RANDOM" />
+                            <Setter Property="FontSize" Value="16" />
+                            <Setter Property="FontWeight" Value="Bold" />
+                            <Setter Property="Background" Value="CadetBlue" />
+                            <Setter Property="Foreground" Value="White" />
+                            <Setter Property="BorderBrush" Value="DarkBlue" />
+                            <Setter Property="BorderThickness" Value="1" />
+                            <Setter Property="HorizontalContentAlignment" Value="Center" />
+                            <Setter Property="VerticalContentAlignment" Value="Center" />
+                        </Style>
+                    </Button.Style>
+                </Button>
+
+                <Button x:Name="ButtonEmpty" Click="ButtonEmpty_Click">
+                    <Button.Style>
+                        <Style TargetType="Button">
+                            <Setter Property="Content" Value="EMPTY" />
+                            <Setter Property="FontSize" Value="16" />
+                            <Setter Property="FontWeight" Value="Bold" />
+                            <Setter Property="Background" Value="CadetBlue" />
+                            <Setter Property="Foreground" Value="White" />
+                            <Setter Property="BorderBrush" Value="DarkBlue" />
+                            <Setter Property="BorderThickness" Value="1" />
+                            <Setter Property="HorizontalContentAlignment" Value="Center" />
+                            <Setter Property="VerticalContentAlignment" Value="Center" />
+                        </Style>
+                    </Button.Style>
+                </Button>
+            </StackPanel>
+
+            <ListView
+                x:Name="SubstitutionTable"
+                Grid.Row="1"
+                Grid.Column="0"
+                Height="210"
+                ItemsSource="{Binding SubsTblRows}">
+                <ListView.Style>
+                    <Style TargetType="ListView">
+                        <Setter Property="Background" Value="White" />
+                        <Setter Property="Foreground" Value="Black" />
+                        <Setter Property="MaxHeight" Value="300" />
+                        <Setter Property="BorderThickness" Value="1" />
+                        <Setter Property="BorderBrush" Value="DarkBlue" />
+                        <Setter Property="HorizontalAlignment" Value="Stretch" />
+                        <Setter Property="VerticalAlignment" Value="Top" />
+                        <Setter Property="HorizontalContentAlignment" Value="Center" />
+                        <Setter Property="VerticalContentAlignment" Value="Center" />
+                    </Style>
+                </ListView.Style>
+                <ListView.ItemContainerStyle>
+                    <Style TargetType="ListViewItem">
+                        <Setter Property="VerticalAlignment" Value="Center" />
+                        <Setter Property="HorizontalAlignment" Value="Center" />
+                        <Setter Property="VerticalContentAlignment" Value="Center" />
+                        <Setter Property="HorizontalContentAlignment" Value="Center" />
+                    </Style>
+                </ListView.ItemContainerStyle>
+                <ListView.View>
+                    <GridView>
+                        <GridView.ColumnHeaderContainerStyle>
+                            <Style BasedOn="{StaticResource StyleGridViewColHeader}" TargetType="GridViewColumnHeader" />
+                        </GridView.ColumnHeaderContainerStyle>
+                        <GridViewColumn Width="60" Header="A">
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <ComboBox
+                                        GotMouseCapture="ComboBox_GotMouseCapture"
+                                        KeyDown="TextBoxKeyWord_KeyDown"
+                                        LostFocus="ComboBox_LostFocus"
+                                        SelectedItem="{Binding Char0, Mode=TwoWay}"
+                                        Text="{Binding Char0, Mode=OneWay}" />
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
+                        <GridViewColumn Width="60" Header="D">
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <ComboBox
+                                        GotMouseCapture="ComboBox_GotMouseCapture"
+                                        KeyDown="TextBoxKeyWord_KeyDown"
+                                        LostFocus="ComboBox_LostFocus"
+                                        SelectedItem="{Binding Char1, Mode=TwoWay}"
+                                        Text="{Binding Char1, Mode=OneWay}" />
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
+                        <GridViewColumn Width="60" Header="F">
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <ComboBox
+                                        GotMouseCapture="ComboBox_GotMouseCapture"
+                                        KeyDown="TextBoxKeyWord_KeyDown"
+                                        LostFocus="ComboBox_LostFocus"
+                                        SelectedItem="{Binding Char2, Mode=TwoWay}"
+                                        Text="{Binding Char2, Mode=OneWay}" />
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
+                        <GridViewColumn Width="60" Header="G">
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <ComboBox
+                                        GotMouseCapture="ComboBox_GotMouseCapture"
+                                        KeyDown="TextBoxKeyWord_KeyDown"
+                                        LostFocus="ComboBox_LostFocus"
+                                        SelectedItem="{Binding Char3, Mode=TwoWay}"
+                                        Style="{StaticResource StyleComboBox}"
+                                        Text="{Binding Char3, Mode=OneWay}" />
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
+                        <GridViewColumn Width="60" Header="V">
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <ComboBox
+                                        GotMouseCapture="ComboBox_GotMouseCapture"
+                                        KeyDown="TextBoxKeyWord_KeyDown"
+                                        LostFocus="ComboBox_LostFocus"
+                                        SelectedItem="{Binding Char4, Mode=TwoWay}"
+                                        Style="{StaticResource StyleComboBox}"
+                                        Text="{Binding Char4, Mode=OneWay}" />
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
+                        <GridViewColumn Width="60" Header="X">
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <ComboBox
+                                        GotMouseCapture="ComboBox_GotMouseCapture"
+                                        KeyDown="TextBoxKeyWord_KeyDown"
+                                        LostFocus="ComboBox_LostFocus"
+                                        SelectedItem="{Binding Char5, Mode=TwoWay}"
+                                        Style="{StaticResource StyleComboBox}"
+                                        Text="{Binding Char5, Mode=OneWay}" />
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
+                    </GridView>
+                </ListView.View>
+            </ListView>
+
+            <Label
+                Grid.Row="0"
+                Grid.Column="3"
+                Content="LOCALIZATION">
+                <Label.Style>
+                    <Style TargetType="Label">
+                        <Setter Property="Background" Value="DarkBlue" />
+                        <Setter Property="Foreground" Value="White" />
+                        <Setter Property="FontSize" Value="16" />
+                        <Setter Property="FontWeight" Value="Bold" />
+                        <Setter Property="BorderThickness" Value="1" />
+                        <Setter Property="BorderBrush" Value="DarkBlue" />
+                        <Setter Property="ClipToBounds" Value="True" />
+                        <Setter Property="HorizontalAlignment" Value="Stretch" />
+                        <Setter Property="VerticalAlignment" Value="Stretch" />
+                        <Setter Property="HorizontalContentAlignment" Value="Center" />
+                        <Setter Property="VerticalContentAlignment" Value="Center" />
+                        <Setter Property="Focusable" Value="False" />
+                    </Style>
+                </Label.Style>
+            </Label>
+
+            <StackPanel Grid.Row="1" Grid.Column="3">
+                <Button x:Name="ButtonEnglish" Click="ButtonEnglish_Click">
+                    <Button.Style>
+                        <Style TargetType="Button">
+                            <Setter Property="Content" Value="ENGLISH" />
+                            <Setter Property="FontSize" Value="16" />
+                            <Setter Property="FontWeight" Value="Bold" />
+                            <Setter Property="Background" Value="OliveDrab" />
+                            <Setter Property="Foreground" Value="White" />
+                            <Setter Property="BorderBrush" Value="DarkBlue" />
+                            <Setter Property="BorderThickness" Value="1" />
+                            <Setter Property="HorizontalContentAlignment" Value="Center" />
+                            <Setter Property="VerticalContentAlignment" Value="Center" />
+                        </Style>
+                    </Button.Style>
+                </Button>
+
+                <Button x:Name="ButtonCzech" Click="ButtonCzech_Click">
+                    <Button.Style>
+                        <Style TargetType="Button">
+                            <Setter Property="Content" Value="CZECH" />
+                            <Setter Property="FontSize" Value="16" />
+                            <Setter Property="FontWeight" Value="Bold" />
+                            <Setter Property="Background" Value="PaleVioletRed" />
+                            <Setter Property="Foreground" Value="White" />
+                            <Setter Property="BorderBrush" Value="DarkBlue" />
+                            <Setter Property="BorderThickness" Value="1" />
+                            <Setter Property="HorizontalContentAlignment" Value="Center" />
+                            <Setter Property="VerticalContentAlignment" Value="Center" />
+                        </Style>
+                    </Button.Style>
+                </Button>
+            </StackPanel>
+
+            <Label
+                Grid.Row="0"
+                Grid.Column="4"
+                Content="FILTER TABLE">
+                <Label.Style>
+                    <Style TargetType="Label">
+                        <Setter Property="Background" Value="DarkBlue" />
+                        <Setter Property="Foreground" Value="White" />
+                        <Setter Property="FontSize" Value="16" />
+                        <Setter Property="FontWeight" Value="Bold" />
+                        <Setter Property="BorderThickness" Value="1" />
+                        <Setter Property="BorderBrush" Value="DarkBlue" />
+                        <Setter Property="ClipToBounds" Value="True" />
+                        <Setter Property="HorizontalAlignment" Value="Stretch" />
+                        <Setter Property="VerticalAlignment" Value="Stretch" />
+                        <Setter Property="HorizontalContentAlignment" Value="Center" />
+                        <Setter Property="VerticalContentAlignment" Value="Center" />
+                        <Setter Property="Focusable" Value="False" />
+                    </Style>
+                </Label.Style>
+            </Label>
+
+            <ListView
+                Grid.Row="1"
+                Grid.Column="4"
+                ItemsSource="{Binding ObsCollInFilter}"
+                ScrollViewer.CanContentScroll="False"
+                ScrollViewer.VerticalScrollBarVisibility="Auto">
+                <ListView.Style>
+                    <Style TargetType="ListView">
+                        <Setter Property="Background" Value="White" />
+                        <Setter Property="Foreground" Value="Black" />
+                        <Setter Property="MaxHeight" Value="210" />
+                        <Setter Property="BorderThickness" Value="1" />
+                        <Setter Property="BorderBrush" Value="DarkBlue" />
+                        <Setter Property="VerticalAlignment" Value="Top" />
+                        <Setter Property="HorizontalAlignment" Value="Stretch" />
+                    </Style>
+                </ListView.Style>
+                <ListView.ItemContainerStyle>
+                    <Style TargetType="ListViewItem">
+                        <Setter Property="VerticalAlignment" Value="Center" />
+                        <Setter Property="HorizontalAlignment" Value="Center" />
+                        <Setter Property="VerticalContentAlignment" Value="Center" />
+                        <Setter Property="HorizontalContentAlignment" Value="Center" />
+                    </Style>
+                </ListView.ItemContainerStyle>
+                <ListView.View>
+                    <GridView>
+                        <GridView.ColumnHeaderContainerStyle>
+                            <Style TargetType="GridViewColumnHeader">
+                                <Setter Property="HorizontalAlignment" Value="Center" />
+                                <Setter Property="VerticalAlignment" Value="Center" />
+                                <Setter Property="Background" Value="White" />
+                                <Setter Property="Foreground" Value="DarkBlue" />
+                                <Setter Property="BorderThickness" Value="0" />
+                                <Setter Property="BorderBrush" Value="White" />
+                                <Setter Property="FontSize" Value="16" />
+                                <Setter Property="FontWeight" Value="Bold" />
+                                <Setter Property="BorderThickness" Value="0" />
+                                <Setter Property="BorderBrush" Value="Transparent" />
+                                <Setter Property="Focusable" Value="False" />
+                                <Setter Property="IsHitTestVisible" Value="False" />
+                            </Style>
+                        </GridView.ColumnHeaderContainerStyle>
+                        <GridViewColumn Width="100" Header="IN">
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding Key}">
+                                        <TextBlock.Style>
+                                            <Style TargetType="TextBlock">
+                                                <Setter Property="Background" Value="White" />
+                                                <Setter Property="Foreground" Value="Black" />
+                                                <Setter Property="FontSize" Value="16" />
+                                                <Setter Property="FontWeight" Value="Bold" />
+                                                <Setter Property="ClipToBounds" Value="True" />
+                                                <Setter Property="HorizontalAlignment" Value="Center" />
+                                                <Setter Property="VerticalAlignment" Value="Center" />
+                                                <Setter Property="Focusable" Value="False" />
+                                                <Setter Property="TextAlignment" Value="Center" />
+                                            </Style>
+                                        </TextBlock.Style>
+                                    </TextBlock>
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
+                        <GridViewColumn Width="100" Header="OUT">
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding Value}">
+                                        <TextBlock.Style>
+                                            <Style TargetType="TextBlock">
+                                                <Setter Property="Background" Value="White" />
+                                                <Setter Property="Foreground" Value="Black" />
+                                                <Setter Property="FontSize" Value="16" />
+                                                <Setter Property="FontWeight" Value="Bold" />
+                                                <Setter Property="ClipToBounds" Value="True" />
+                                                <Setter Property="HorizontalAlignment" Value="Center" />
+                                                <Setter Property="VerticalAlignment" Value="Center" />
+                                                <Setter Property="Focusable" Value="False" />
+                                                <Setter Property="TextAlignment" Value="Center" />
+                                            </Style>
+                                        </TextBlock.Style>
+                                    </TextBlock>
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
+                    </GridView>
+                </ListView.View>
+            </ListView>
+
+        </Grid>
+        <!--#endregion-->
+
+        <!--#region INPUT FORM-->
+        <Grid Grid.Row="2" Grid.Column="0">
+            <Grid.Style>
+                <Style BasedOn="{StaticResource StyleGridBase}" TargetType="Grid" />
+            </Grid.Style>
+
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+
+            <Label
+                Grid.Row="0"
+                Grid.Column="0"
+                Content="INPUT">
+                <Label.Style>
+                    <Style TargetType="Label">
+                        <Setter Property="Background" Value="DarkBlue" />
+                        <Setter Property="Foreground" Value="White" />
+                        <Setter Property="FontSize" Value="16" />
+                        <Setter Property="FontWeight" Value="Bold" />
+                        <Setter Property="BorderThickness" Value="1" />
+                        <Setter Property="BorderBrush" Value="DarkBlue" />
+                        <Setter Property="ClipToBounds" Value="True" />
+                        <Setter Property="HorizontalAlignment" Value="Stretch" />
+                        <Setter Property="VerticalAlignment" Value="Stretch" />
+                        <Setter Property="HorizontalContentAlignment" Value="Center" />
+                        <Setter Property="VerticalContentAlignment" Value="Center" />
+                        <Setter Property="Focusable" Value="False" />
+                    </Style>
+                </Label.Style>
+            </Label>
+
+            <TextBox
+                x:Name="TextBoxinput"
+                Grid.Row="1"
+                Grid.Column="0">
+                <TextBox.Style>
+                    <Style TargetType="TextBox">
+                        <Setter Property="Background" Value="White" />
+                        <Setter Property="Foreground" Value="Black" />
+                        <Setter Property="FontSize" Value="16" />
+                        <Setter Property="TextWrapping" Value="Wrap" />
+                        <Setter Property="CharacterCasing" Value="Upper" />
+                        <Setter Property="InputScope" Value="Default" />
+                        <Setter Property="BorderBrush" Value="DarkBlue" />
+                        <Setter Property="BorderThickness" Value="1,0,1,1" />
+                        <Setter Property="ClipToBounds" Value="True" />
+                        <Setter Property="HorizontalAlignment" Value="Stretch" />
+                        <Setter Property="VerticalAlignment" Value="Stretch" />
+                        <Setter Property="HorizontalContentAlignment" Value="Left" />
+                        <Setter Property="VerticalContentAlignment" Value="Top" />
+                        <Setter Property="IsReadOnly" Value="False" />
+                        <Setter Property="Text" Value="{Binding Input, Mode=TwoWay}" />
+                        <Setter Property="IsHitTestVisible" Value="True" />
+                        <Setter Property="Focusable" Value="True" />
+                        <Setter Property="VerticalScrollBarVisibility" Value="Auto" />
+                    </Style>
+                </TextBox.Style>
+            </TextBox>
+        </Grid>
+        <!--#endregion-->
+
+        <!--#region OUTPUT FORM-->
+        <Grid Grid.Row="3" Grid.Column="0">
+            <Grid.Style>
+                <Style BasedOn="{StaticResource StyleGridBase}" TargetType="Grid" />
+            </Grid.Style>
+
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+
+            <Label
+                Grid.Row="0"
+                Grid.Column="0"
+                Content="OUTPUT">
+                <Label.Style>
+                    <Style TargetType="Label">
+                        <Setter Property="Background" Value="DarkBlue" />
+                        <Setter Property="Foreground" Value="White" />
+                        <Setter Property="FontSize" Value="16" />
+                        <Setter Property="FontWeight" Value="Bold" />
+                        <Setter Property="BorderThickness" Value="1" />
+                        <Setter Property="BorderBrush" Value="DarkBlue" />
+                        <Setter Property="ClipToBounds" Value="True" />
+                        <Setter Property="HorizontalAlignment" Value="Stretch" />
+                        <Setter Property="VerticalAlignment" Value="Stretch" />
+                        <Setter Property="HorizontalContentAlignment" Value="Center" />
+                        <Setter Property="VerticalContentAlignment" Value="Center" />
+                        <Setter Property="Focusable" Value="False" />
+                    </Style>
+                </Label.Style>
+            </Label>
+
+            <TextBox
+                x:Name="TextBoxOutput"
+                Grid.Row="1"
+                Grid.Column="0">
+                <TextBox.Style>
+                    <Style TargetType="TextBox">
+                        <Setter Property="Background" Value="White" />
+                        <Setter Property="Foreground" Value="Black" />
+                        <Setter Property="FontSize" Value="16" />
+                        <Setter Property="TextWrapping" Value="Wrap" />
+                        <Setter Property="CharacterCasing" Value="Upper" />
+                        <Setter Property="InputScope" Value="Default" />
+                        <Setter Property="BorderBrush" Value="DarkBlue" />
+                        <Setter Property="BorderThickness" Value="1,0,1,1" />
+                        <Setter Property="ClipToBounds" Value="True" />
+                        <Setter Property="HorizontalAlignment" Value="Stretch" />
+                        <Setter Property="VerticalAlignment" Value="Stretch" />
+                        <Setter Property="HorizontalContentAlignment" Value="Left" />
+                        <Setter Property="VerticalContentAlignment" Value="Top" />
+                        <Setter Property="IsReadOnly" Value="True" />
+                        <Setter Property="Text" Value="{Binding Output, Mode=OneWay}" />
+                        <Setter Property="IsHitTestVisible" Value="False" />
+                        <Setter Property="Focusable" Value="True" />
+                        <Setter Property="VerticalScrollBarVisibility" Value="Auto" />
+                    </Style>
+                </TextBox.Style>
+            </TextBox>
+        </Grid>
+        <!--#endregion-->
+    </Grid>
+    <!--#endregion-->
+</Window>
