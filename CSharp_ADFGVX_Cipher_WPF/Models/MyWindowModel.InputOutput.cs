@@ -12,7 +12,7 @@ namespace CSharp_ADFGVX_Cipher_WPF.Models
     {
         private string input;
         private string output;
-        private readonly Dictionary<char, string> encryptionFilter;
+        private readonly Dictionary<char, string> encryptionCharFilter;
 
         public string Input
         {

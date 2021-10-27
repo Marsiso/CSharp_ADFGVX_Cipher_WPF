@@ -1,9 +1,9 @@
-﻿using System.Collections.Generic;
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
-using System;
-using System.Text;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Linq;
+using System.Runtime.CompilerServices;
 
 namespace CSharp_ADFGVX_Cipher_WPF.Models
 {
@@ -11,16 +11,21 @@ namespace CSharp_ADFGVX_Cipher_WPF.Models
     {
         private bool isFullSize;
         private bool isLocalizationEnglish;
-        private ObservableCollection<ObsCollKeyValuePairInFilter> obsCollInFilter;
-        private readonly Dictionary<char, int> subsTblCharsCounter;
+        private ObservableCollection<InputFilterObservableEntry> inputFilterObservableEntries;
+        private readonly Dictionary<char, int> substitutionTableChars;
+        private static readonly IReadOnlyList<string> charAsStringEnglish = new string[] { "XNULAX", "XIEDNAX", "XDVAX", "XTRIX", "XCTYRYX", "XPETX", "XSESTX", "XSEDUMX", "XOSUMX", "XDEVETX" };
+        private static readonly IReadOnlyList<string> charAsStringCzech = new string[] { "XNULAX", "XJEDNAX", "XDVAX", "XTRIX", "XCTYRYX", "XPETX", "XSESTX", "XSEDUMX", "XOSUMX", "XDEVETX" };
 
-        public Dictionary<char, int> SubsTblCharsCounter { get => subsTblCharsCounter; }
+
+        public Dictionary<char, int> SubstitutionTableChars { get => substitutionTableChars; }
+
+        public record InputFilterObservableEntry(char Key, string Value);
 
         public event PropertyChangedEventHandler PropertyChanged;
 
         /// <summary>
-        /// Gets or sets localization. 
-        /// True means that english localization is in effect instead of czech localization.
+        /// Gets or sets localization.
+        /// True means that English localization is in effect instead of Czech localization.
         /// </summary>
         public bool IsLocalizationEnglish
         {
@@ -59,7 +64,7 @@ namespace CSharp_ADFGVX_Cipher_WPF.Models
                 {'Ť', 'T'}, {'Ú', 'U'}, {'Ů', 'U'},
                 {'Ý', 'Y'}, {'Ž', 'Z'}
             };
-            encryptionFilter = new Dictionary<char, string>
+            encryptionCharFilter = new Dictionary<char, string>
             {
                 {'A', "A"}, {'B', "B"}, {'C', "C"},
                 {'D', "D"}, {'E', "E"}, {'F', "F"},
@@ -80,7 +85,7 @@ namespace CSharp_ADFGVX_Cipher_WPF.Models
                 {'Ů', "U"}, {'Ý', "Y"} ,{'Ž', "Z"},
                 {' ', "XMEZERAX"}, {'\n', "XMEZERAX"}
             };
-            subsTblCharsCounter = new Dictionary<char, int>()
+            substitutionTableChars = new Dictionary<char, int>()
             {
                 {'A', 0}, {'B', 0}, {'C', 0},
                 {'D', 0}, {'E', 0}, {'F', 0},
@@ -95,26 +100,26 @@ namespace CSharp_ADFGVX_Cipher_WPF.Models
                 {'4', 0}, {'5', 0}, {'6', 0},
                 {'7', 0}, {'8', 0}, {'9', 0}
             };
-            keyWordCharCounter = new Dictionary<char, int>() { };
+            keyWordCharCounter = new Dictionary<char, int>();
             isFullSize = true;
             isLocalizationEnglish = true;
             keyWord = string.Empty;
             input = string.Empty;
             output = string.Empty;
-            SubstitutionTable = new char[6, 6]
+            substitutionTable = new char[6, 6]
             {
                 { ' ', ' ', ' ', ' ', ' ', ' '},
-                { ' ', ' ', 'A', ' ', ' ', ' '},
                 { ' ', ' ', ' ', ' ', ' ', ' '},
-                { ' ', ' ', ' ', 'A', ' ', ' '},
-                { ' ', ' ', ' ', ' ', 'A', ' '},
+                { ' ', ' ', ' ', ' ', ' ', ' '},
+                { ' ', ' ', ' ', ' ', ' ', ' '},
+                { ' ', ' ', ' ', ' ', ' ', ' '},
                 { ' ', ' ', ' ', ' ', ' ', ' '}
             };
-            obsCollInFilter = new ObservableCollection<ObsCollKeyValuePairInFilter>();
-            subsTblRows = new ObservableCollection<SubsTblRow>();
+            inputFilterObservableEntries = new ObservableCollection<InputFilterObservableEntry>();
+            substitutionTableEntries = new ObservableCollection<SubstitutionTableEntry>();
 
             IsFullSize = true;
-            SubsTblRows = new ObservableCollection<SubsTblRow>();
+            SubstitutionTableEntries = new ObservableCollection<SubstitutionTableEntry>();
         }
 
         /// <summary>
@@ -125,79 +130,68 @@ namespace CSharp_ADFGVX_Cipher_WPF.Models
         /// <param name="name"></param>
         private void SetLocalization(ref bool store, bool value, [CallerMemberName] string name = null)
         {
+            int indexer = 0;
             switch (value, IsFullSize)
             {
                 case (true, true):
                 case (false, true):
-                    encryptionFilter['0'] = "0";
-                    encryptionFilter['1'] = "1";
-                    encryptionFilter['2'] = "2";
-                    encryptionFilter['3'] = "3";
-                    encryptionFilter['4'] = "4";
-                    encryptionFilter['5'] = "5";
-                    encryptionFilter['6'] = "6";
-                    encryptionFilter['7'] = "7";
-                    encryptionFilter['8'] = "8";
-                    encryptionFilter['9'] = "9";
-                    encryptionFilter['J'] = "J";
-                    encryptionFilter['Q'] = "Q";
-                    foreach (KeyValuePair<char, int> keyValuePair in SubsTblCharsCounter)
+                    foreach (KeyValuePair<char, string> keyValuePair in encryptionCharFilter.Where(entry => char.IsDigit(entry.Key)))
                     {
-                        SubsTblCharsCounter[keyValuePair.Key] = 0;
+                        encryptionCharFilter[keyValuePair.Key] = $"{indexer}";
+                        ++indexer;
+                    }
+                    encryptionCharFilter['J'] = "J";
+                    encryptionCharFilter['Q'] = "Q";
+                    foreach (KeyValuePair<char, int> keyValuePair in SubstitutionTableChars)
+                    {
+                        SubstitutionTableChars[keyValuePair.Key] = 0;
                     }
                     break;
+
                 case (true, false):
-                    encryptionFilter['0'] = "XNULAX";
-                    encryptionFilter['1'] = "XIEDNAX";
-                    encryptionFilter['2'] = "XDVAX";
-                    encryptionFilter['3'] = "XTRIX";
-                    encryptionFilter['4'] = "XCTYRYX";
-                    encryptionFilter['5'] = "XPETX";
-                    encryptionFilter['6'] = "XSESTX";
-                    encryptionFilter['7'] = "XSEDMX";
-                    encryptionFilter['8'] = "XOSMX";
-                    encryptionFilter['9'] = "XDEVETX";
-                    encryptionFilter['J'] = "I";
-                    encryptionFilter['Q'] = "Q";
-                    foreach (KeyValuePair<char, int> keyValuePair in SubsTblCharsCounter)
+                    foreach (KeyValuePair<char, string> keyValuePair in encryptionCharFilter.Where(entry => char.IsDigit(entry.Key)))
                     {
-                        if (Char.IsDigit(keyValuePair.Key) || keyValuePair.Key.Equals('J'))
+                        encryptionCharFilter[keyValuePair.Key] = charAsStringEnglish[indexer];
+                        ++indexer;
+                    }
+                    encryptionCharFilter['J'] = "I";
+                    encryptionCharFilter['Q'] = "Q";
+                    foreach (KeyValuePair<char, int> keyValuePair in SubstitutionTableChars)
+                    {
+                        if (char.IsDigit(keyValuePair.Key) || keyValuePair.Key.Equals('J'))
                         {
-                            SubsTblCharsCounter[keyValuePair.Key] = 1;
+                            SubstitutionTableChars[keyValuePair.Key] = 1;
                             continue;
                         }
-                        SubsTblCharsCounter[keyValuePair.Key] = 0;
+                        SubstitutionTableChars[keyValuePair.Key] = 0;
                     }
                     break;
+
                 case (false, false):
-                    encryptionFilter['0'] = "XNULAX";
-                    encryptionFilter['1'] = "XJEDNAX";
-                    encryptionFilter['2'] = "XDVAX";
-                    encryptionFilter['3'] = "XTRIX";
-                    encryptionFilter['4'] = "XCTYRYX";
-                    encryptionFilter['5'] = "XPETX";
-                    encryptionFilter['6'] = "XSESTX";
-                    encryptionFilter['7'] = "XSEDMX";
-                    encryptionFilter['8'] = "XOSMX";
-                    encryptionFilter['9'] = "XDEVETX";
-                    encryptionFilter['J'] = "J";
-                    encryptionFilter['Q'] = "K";
-                    foreach (KeyValuePair<char, int> keyValuePair in SubsTblCharsCounter)
+                    foreach (KeyValuePair<char, string> keyValuePair in encryptionCharFilter.Where(entry => char.IsDigit(entry.Key)))
+                    {
+                        encryptionCharFilter[keyValuePair.Key] = charAsStringCzech[indexer];
+                        ++indexer;
+                    }
+                    encryptionCharFilter['J'] = "J";
+                    encryptionCharFilter['Q'] = "K";
+                    foreach (KeyValuePair<char, int> keyValuePair in SubstitutionTableChars)
                     {
                         if (Char.IsDigit(keyValuePair.Key) || keyValuePair.Key.Equals('Q'))
                         {
-                            SubsTblCharsCounter[keyValuePair.Key] = 1;
+                            SubstitutionTableChars[keyValuePair.Key] = 1;
                             continue;
                         }
-                        SubsTblCharsCounter[keyValuePair.Key] = 0;
+                        SubstitutionTableChars[keyValuePair.Key] = 0;
                     }
                     break;
+
                 default:
             }
 
             store = value;
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
-            ObsCollInFilter = new ObservableCollection<ObsCollKeyValuePairInFilter>();
+            InputFilterObservableEntries = new ObservableCollection<InputFilterObservableEntry>();
         }
 
         /// <summary>
@@ -211,24 +205,22 @@ namespace CSharp_ADFGVX_Cipher_WPF.Models
             IsLocalizationEnglish = isLocalizationEnglish;
         }
 
-        public ObservableCollection<ObsCollKeyValuePairInFilter> ObsCollInFilter
+        public ObservableCollection<InputFilterObservableEntry> InputFilterObservableEntries
         {
-            get => obsCollInFilter;
-            set => SetObsCollInFilter(ref obsCollInFilter, value);
+            get => inputFilterObservableEntries;
+            set => SetInputFilterObservable(ref inputFilterObservableEntries, value);
         }
 
-        private void SetObsCollInFilter(ref ObservableCollection<ObsCollKeyValuePairInFilter> store,
-            ObservableCollection<ObsCollKeyValuePairInFilter> value, [CallerMemberName] string name = null)
+        private void SetInputFilterObservable(ref ObservableCollection<InputFilterObservableEntry> store,
+            ObservableCollection<InputFilterObservableEntry> value, [CallerMemberName] string name = null)
         {
-            foreach (KeyValuePair<char, string> keyValuePair in encryptionFilter)
+            foreach (KeyValuePair<char, string> keyValuePair in encryptionCharFilter)
             {
-                value.Add(new ObsCollKeyValuePairInFilter(keyValuePair.Key, keyValuePair.Value));
+                value.Add(new InputFilterObservableEntry(keyValuePair.Key, keyValuePair.Value));
             }
 
             store = value;
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
         }
-
-        public record ObsCollKeyValuePairInFilter(char Key, string Value);
     }
 }
