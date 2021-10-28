@@ -6,6 +6,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Controls.Primitives;
 
 namespace CSharp_ADFGVX_Cipher_WPF.Views
 {
@@ -16,7 +17,11 @@ namespace CSharp_ADFGVX_Cipher_WPF.Views
     {
         private bool isSubsTblCharChckEnabled = true;
 
-        public MyWindowView() => InitializeComponent();
+        public MyWindowView()
+        {
+            InitializeComponent();
+            ToolTipSubstitutionTable.TextBlockPopUp.DataContext = myWindowModel;
+        }
 
         private void NumberValidationTextBox(object sender, TextCompositionEventArgs e)
         {
@@ -88,6 +93,7 @@ namespace CSharp_ADFGVX_Cipher_WPF.Views
                                     myWindowModel.SubstitutionTableEntries[i].Col4Char = myWindowModel.SubstitutionTableEntries[i].Col5Char = ' ';
 
             isSubsTblCharChckEnabled = true;
+            myWindowModel.CharsRemainingSubsTblStr = string.Empty;
         }
 
         private void RandomizeSubsTable()
@@ -138,6 +144,7 @@ namespace CSharp_ADFGVX_Cipher_WPF.Views
             }
 
             isSubsTblCharChckEnabled = true;
+            myWindowModel.CharsRemainingSubsTblStr = string.Empty;
         }
 
         private void ButtonRandom_Click(object sender, RoutedEventArgs e) => RandomizeSubsTable();
@@ -152,11 +159,15 @@ namespace CSharp_ADFGVX_Cipher_WPF.Views
         private void TextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
             if (!isSubsTblCharChckEnabled)
+            {
                 return;
+            }
 
             TextBox textBox = sender as TextBox;
             if (string.IsNullOrWhiteSpace(textBox.Text) || !char.TryParse(textBox.Text, out char c))
+            {
                 return;
+            }
 
             if (!myWindowModel.SubstitutionTableChars.TryGetValue(c, out int num) || num.Equals(1))
             {
@@ -165,14 +176,38 @@ namespace CSharp_ADFGVX_Cipher_WPF.Views
             }
 
             for (int i = 0; i < 6; ++i)
+            {
                 for (int j = 0; j < 6; ++j)
+                {
                     if (myWindowModel.SubstitutionTable[i, j].Equals(c))
                     {
                         textBox.Text = "";
                         return;
                     }
+                }
+            }
 
-            Keyboard.ClearFocus();
+            textBox.MoveFocus(new TraversalRequest(FocusNavigationDirection.Next));
+            //Keyboard.ClearFocus();
+        }
+
+        private void TextBox_MouseEnter(object sender, MouseEventArgs e)
+        {
+            if (string.IsNullOrWhiteSpace(myWindowModel.CharsRemainingSubsTblStr))
+            {
+                return;
+            }
+
+            TextBox textBox = sender as TextBox;
+            PopUpSubsTableToolTip.PlacementTarget = textBox;
+            PopUpSubsTableToolTip.Placement = PlacementMode.Right;
+            PopUpSubsTableToolTip.IsOpen = true;
+        }
+
+        private void TextBox_MouseLeave(object sender, MouseEventArgs e)
+        {
+            PopUpSubsTableToolTip.Visibility = Visibility.Collapsed;
+            PopUpSubsTableToolTip.IsOpen = false;
         }
     }
 }

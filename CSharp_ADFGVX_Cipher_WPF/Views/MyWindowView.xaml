@@ -5,6 +5,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:models="clr-namespace:CSharp_ADFGVX_Cipher_WPF.Models"
+    xmlns:views="clr-namespace:CSharp_ADFGVX_Cipher_WPF.Views"
     mc:Ignorable="d">
 
     <Window.Style>
@@ -115,8 +116,8 @@
         </Style>
         <!--  LISTVIEWITEM BASIC  -->
         <Style x:Key="StyleListViewItemBasic" TargetType="ListViewItem">
-            <Setter Property="VerticalAlignment" Value="Center" />
-            <Setter Property="HorizontalAlignment" Value="Center" />
+            <Setter Property="VerticalAlignment" Value="Stretch" />
+            <Setter Property="HorizontalAlignment" Value="Stretch" />
             <Setter Property="VerticalContentAlignment" Value="Center" />
             <Setter Property="HorizontalContentAlignment" Value="Center" />
             <Setter Property="OverridesDefaultStyle" Value="False" />
@@ -125,12 +126,13 @@
         <Style x:Key="StyleListViewBasic" TargetType="ListView">
             <Setter Property="Background" Value="White" />
             <Setter Property="Foreground" Value="Black" />
-            <Setter Property="MaxHeight" Value="210" />
             <Setter Property="BorderThickness" Value="1" />
             <Setter Property="BorderBrush" Value="DarkBlue" />
             <Setter Property="VerticalAlignment" Value="Top" />
             <Setter Property="HorizontalAlignment" Value="Stretch" />
             <Setter Property="OverridesDefaultStyle" Value="False" />
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="HorizontalContentAlignment" Value="Center"/>
         </Style>
         <!--  TEXTBOX BASIC FOR INPUT & OUTPUT  -->
         <Style x:Key="StyleTextBoxBasicForInOut" TargetType="TextBox">
@@ -292,12 +294,25 @@
 
             </StackPanel>
 
-            <ListView
+            <Popup
+                x:Name="PopUpSubsTableToolTip"
                 Grid.Row="1"
                 Grid.Column="0"
-                Height="210"
+                AllowsTransparency="True"
+                HorizontalOffset="5"
+                VerticalOffset="-29">
+                <Grid>
+                    <views:MyPopUpUserControlView x:Name="ToolTipSubstitutionTable" Foreground="Black" />
+                </Grid>
+            </Popup>
+
+            <ListView
+                Grid.Row="1"
+                Grid.Column="0"        
                 ItemsSource="{Binding SubstitutionTableEntries}"
-                SelectionMode="Single">
+                SelectionMode="Single"
+                Height="210"
+                x:Name="ListViewSubsTable">
                 <ListView.Style>
                     <Style BasedOn="{StaticResource StyleListViewBasic}" TargetType="ListView" />
                 </ListView.Style>
@@ -329,6 +344,8 @@
                                         Height="{Binding EntryHeight, Mode=OneWay}"
                                         GotMouseCapture="TextBox_GotMouseCapture"
                                         KeyDown="TextBox_KeyDown"
+                                        MouseEnter="TextBox_MouseEnter"
+                                        MouseLeave="TextBox_MouseLeave"
                                         Style="{StaticResource StyleTextBoxBasic}"
                                         Text="{Binding Col0Char, Mode=TwoWay}"
                                         TextChanged="TextBox_TextChanged" />
@@ -342,6 +359,8 @@
                                         Height="{Binding EntryHeight, Mode=OneWay}"
                                         GotMouseCapture="TextBox_GotMouseCapture"
                                         KeyDown="TextBox_KeyDown"
+                                        MouseEnter="TextBox_MouseEnter"
+                                        MouseLeave="TextBox_MouseLeave"
                                         Style="{StaticResource StyleTextBoxBasic}"
                                         Text="{Binding Col1Char, Mode=TwoWay}"
                                         TextChanged="TextBox_TextChanged" />
@@ -355,6 +374,8 @@
                                         Height="{Binding EntryHeight, Mode=OneWay}"
                                         GotMouseCapture="TextBox_GotMouseCapture"
                                         KeyDown="TextBox_KeyDown"
+                                        MouseEnter="TextBox_MouseEnter"
+                                        MouseLeave="TextBox_MouseLeave"
                                         Style="{StaticResource StyleTextBoxBasic}"
                                         Text="{Binding Col2Char, Mode=TwoWay}"
                                         TextChanged="TextBox_TextChanged" />
@@ -368,6 +389,8 @@
                                         Height="{Binding EntryHeight, Mode=OneWay}"
                                         GotMouseCapture="TextBox_GotMouseCapture"
                                         KeyDown="TextBox_KeyDown"
+                                        MouseEnter="TextBox_MouseEnter"
+                                        MouseLeave="TextBox_MouseLeave"
                                         Style="{StaticResource StyleTextBoxBasic}"
                                         Text="{Binding Col3Char, Mode=TwoWay}"
                                         TextChanged="TextBox_TextChanged" />
@@ -381,6 +404,8 @@
                                         Height="{Binding EntryHeight, Mode=OneWay}"
                                         GotMouseCapture="TextBox_GotMouseCapture"
                                         KeyDown="TextBox_KeyDown"
+                                        MouseEnter="TextBox_MouseEnter"
+                                        MouseLeave="TextBox_MouseLeave"
                                         Style="{StaticResource StyleTextBoxBasic}"
                                         Text="{Binding Col4Char, Mode=TwoWay}"
                                         TextChanged="TextBox_TextChanged" />
@@ -394,6 +419,8 @@
                                         Height="{Binding EntryHeight, Mode=OneWay}"
                                         GotMouseCapture="TextBox_GotMouseCapture"
                                         KeyDown="TextBox_KeyDown"
+                                        MouseEnter="TextBox_MouseEnter"
+                                        MouseLeave="TextBox_MouseLeave"
                                         Style="{StaticResource StyleTextBoxBasic}"
                                         Text="{Binding Col5Char, Mode=TwoWay}"
                                         TextChanged="TextBox_TextChanged" />
@@ -437,7 +464,8 @@
                 Grid.Column="4"
                 ItemsSource="{Binding InputFilterObservableEntries}"
                 ScrollViewer.CanContentScroll="False"
-                ScrollViewer.VerticalScrollBarVisibility="Auto">
+                ScrollViewer.VerticalScrollBarVisibility="Auto"
+                MaxHeight="{Binding ElementName=ListViewSubsTable, Path=Height}">
                 <ListView.Style>
                     <Style BasedOn="{StaticResource StyleListViewBasic}" TargetType="ListView" />
                 </ListView.Style>

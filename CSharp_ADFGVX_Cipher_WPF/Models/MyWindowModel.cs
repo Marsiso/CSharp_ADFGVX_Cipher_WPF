@@ -117,9 +117,11 @@ namespace CSharp_ADFGVX_Cipher_WPF.Models
             };
             inputFilterObservableEntries = new ObservableCollection<InputFilterObservableEntry>();
             substitutionTableEntries = new ObservableCollection<SubstitutionTableEntry>();
+            charsRemainingSubsTblStr = string.Empty;
 
             IsFullSize = true;
             SubstitutionTableEntries = new ObservableCollection<SubstitutionTableEntry>();
+            CharsRemainingSubsTblStr = string.Empty;
         }
 
         /// <summary>
@@ -215,9 +217,7 @@ namespace CSharp_ADFGVX_Cipher_WPF.Models
             ObservableCollection<InputFilterObservableEntry> value, [CallerMemberName] string name = null)
         {
             foreach (KeyValuePair<char, string> keyValuePair in encryptionCharFilter)
-            {
                 value.Add(new InputFilterObservableEntry(keyValuePair.Key, keyValuePair.Value));
-            }
 
             store = value;
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));

@@ -112,6 +112,7 @@ namespace CSharp_ADFGVX_Cipher_WPF.Models
                     _ => throw new NotImplementedException()
                 };
                 MyWindowModel.SubstitutionTable[Id, column] = value;
+                MyWindowModel.CharsRemainingSubsTblStr = string.Empty;
             }
         }
     }
