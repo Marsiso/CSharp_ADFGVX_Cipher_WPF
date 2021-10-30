@@ -33,23 +33,6 @@ namespace CSharp_ADFGVX_Cipher_WPF.Models
 
         public char[,] SubstitutionTable => substitutionTable;
 
-        public void DisplayContentsSubsTbl(int row, int col, char c)
-        {
-            SubstitutionTable[row, col] = c;
-
-            StringBuilder stringBuilder = new StringBuilder();
-            for (int i = 0; i < 6; ++i)
-            {
-                for (int j = 0; j < 6; ++j)
-                {
-                    _ = stringBuilder.Append(SubstitutionTable[i, j]);
-                    _ = stringBuilder.Append(' ');
-                }
-                _ = stringBuilder.Append('\n');
-            }
-            Input = stringBuilder.ToString();
-        }
-
         public string CharsRemainingSubsTblStr
         {
             get => charsRemainingSubsTblStr;
@@ -87,7 +70,6 @@ namespace CSharp_ADFGVX_Cipher_WPF.Models
 
             store = stringBuilder.ToString();
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
-            Input = stringBuilder.ToString();
         }
     }
 }

@@ -109,7 +109,7 @@ namespace CSharp_ADFGVX_Cipher_WPF.Models
                     nameof(Col3Char) => 3,
                     nameof(Col4Char) => 4,
                     nameof(Col5Char) => 5,
-                    _ => throw new NotImplementedException()
+                    _ => throw new ArgumentOutOfRangeException()
                 };
                 MyWindowModel.SubstitutionTable[Id, column] = value;
                 MyWindowModel.CharsRemainingSubsTblStr = string.Empty;

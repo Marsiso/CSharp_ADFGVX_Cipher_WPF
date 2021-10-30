@@ -106,6 +106,7 @@ namespace CSharp_ADFGVX_Cipher_WPF.Models
             keyWord = string.Empty;
             input = string.Empty;
             output = string.Empty;
+            mode = true;
             substitutionTable = new char[6, 6]
             {
                 { ' ', ' ', ' ', ' ', ' ', ' '},
@@ -217,7 +218,9 @@ namespace CSharp_ADFGVX_Cipher_WPF.Models
             ObservableCollection<InputFilterObservableEntry> value, [CallerMemberName] string name = null)
         {
             foreach (KeyValuePair<char, string> keyValuePair in encryptionCharFilter)
+            {
                 value.Add(new InputFilterObservableEntry(keyValuePair.Key, keyValuePair.Value));
+            }
 
             store = value;
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));

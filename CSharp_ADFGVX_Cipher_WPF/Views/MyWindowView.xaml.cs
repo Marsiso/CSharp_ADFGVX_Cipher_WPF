@@ -4,9 +4,9 @@ using System.Security.Cryptography;
 using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Controls.Primitives;
 
 namespace CSharp_ADFGVX_Cipher_WPF.Views
 {
@@ -23,26 +23,35 @@ namespace CSharp_ADFGVX_Cipher_WPF.Views
             ToolTipSubstitutionTable.TextBlockPopUp.DataContext = myWindowModel;
         }
 
-        private void NumberValidationTextBox(object sender, TextCompositionEventArgs e)
-        {
-            Regex regex = new Regex("[^5-6]+");
-            e.Handled = regex.IsMatch(e.Text);
-        }
+        //private void NumberValidationTextBox(object sender, TextCompositionEventArgs e)
+        //{
+        //    Regex regex = new Regex("[^5-6]+");
+        //    e.Handled = regex.IsMatch(e.Text);
+        //}
 
         private void TextBox_KeyDown(object sender, KeyEventArgs e)
         {
             if (!e.Key.Equals(Key.Enter))
+            {
                 return;
+            }
+
             _ = ((sender as TextBox)?.MoveFocus(new TraversalRequest(FocusNavigationDirection.Down)));
         }
 
         private void ButtonEnglish_Click(object sender, RoutedEventArgs e)
         {
             if (myWindowModel.IsLocalizationEnglish)
+            {
                 return;
+            }
+
             myWindowModel.IsLocalizationEnglish = true;
             if (!myWindowModel.IsFullSize)
+            {
                 ClearSubsTable();
+            }
+
             ButtonEnglish.Background = new SolidColorBrush(Color.FromRgb(107, 142, 35));
             ButtonCzech.Background = new SolidColorBrush(Color.FromRgb(219, 112, 147));
         }
@@ -50,10 +59,16 @@ namespace CSharp_ADFGVX_Cipher_WPF.Views
         private void ButtonCzech_Click(object sender, RoutedEventArgs e)
         {
             if (!myWindowModel.IsLocalizationEnglish)
+            {
                 return;
+            }
+
             myWindowModel.IsLocalizationEnglish = false;
             if (!myWindowModel.IsFullSize)
+            {
                 ClearSubsTable();
+            }
+
             ButtonCzech.Background = new SolidColorBrush(Color.FromRgb(107, 142, 35));
             ButtonEnglish.Background = new SolidColorBrush(Color.FromRgb(219, 112, 147));
         }
@@ -61,7 +76,10 @@ namespace CSharp_ADFGVX_Cipher_WPF.Views
         private void ButtonIncrease_Click(object sender, RoutedEventArgs e)
         {
             if (myWindowModel.IsFullSize)
+            {
                 return;
+            }
+
             myWindowModel.IsFullSize = true;
             myWindowModel.SubstitutionTableEntries[4].EntryHeight = 25;
             GridViewSubsTable.Columns[5].Width = 60;
@@ -72,7 +90,10 @@ namespace CSharp_ADFGVX_Cipher_WPF.Views
         private void ButtonDecrease_Click(object sender, RoutedEventArgs e)
         {
             if (!myWindowModel.IsFullSize)
+            {
                 return;
+            }
+
             myWindowModel.IsFullSize = false;
             myWindowModel.SubstitutionTableEntries[4].EntryHeight = 0;
             GridViewSubsTable.Columns[5].Width = 0;
@@ -88,9 +109,14 @@ namespace CSharp_ADFGVX_Cipher_WPF.Views
             isSubsTblCharChckEnabled = false;
 
             for (int i = 0; i < 6; ++i)
-                myWindowModel.SubstitutionTableEntries[i].Col0Char = myWindowModel.SubstitutionTableEntries[i].Col1Char =
-                                    myWindowModel.SubstitutionTableEntries[i].Col2Char = myWindowModel.SubstitutionTableEntries[i].Col3Char =
-                                    myWindowModel.SubstitutionTableEntries[i].Col4Char = myWindowModel.SubstitutionTableEntries[i].Col5Char = ' ';
+            {
+                myWindowModel.SubstitutionTableEntries[i].Col0Char =
+                    myWindowModel.SubstitutionTableEntries[i].Col1Char =
+                    myWindowModel.SubstitutionTableEntries[i].Col2Char =
+                    myWindowModel.SubstitutionTableEntries[i].Col3Char =
+                    myWindowModel.SubstitutionTableEntries[i].Col4Char =
+                    myWindowModel.SubstitutionTableEntries[i].Col5Char = ' ';
+            }
 
             isSubsTblCharChckEnabled = true;
             myWindowModel.CharsRemainingSubsTblStr = string.Empty;
@@ -120,25 +146,25 @@ namespace CSharp_ADFGVX_Cipher_WPF.Views
                 if (myWindowModel.IsFullSize || !i.Equals(4))
                 {
                     myWindowModel.SubstitutionTableEntries[i].Col0Char = rndReorderedUsableChars[i * multiplier];
-                    myWindowModel.SubstitutionTableEntries[i].Col1Char = rndReorderedUsableChars[i * multiplier + 1];
-                    myWindowModel.SubstitutionTableEntries[i].Col2Char = rndReorderedUsableChars[i * multiplier + 2];
-                    myWindowModel.SubstitutionTableEntries[i].Col3Char = rndReorderedUsableChars[i * multiplier + 3];
+                    myWindowModel.SubstitutionTableEntries[i].Col1Char = rndReorderedUsableChars[(i * multiplier) + 1];
+                    myWindowModel.SubstitutionTableEntries[i].Col2Char = rndReorderedUsableChars[(i * multiplier) + 2];
+                    myWindowModel.SubstitutionTableEntries[i].Col3Char = rndReorderedUsableChars[(i * multiplier) + 3];
                     if (!myWindowModel.IsFullSize)
                     {
-                        myWindowModel.SubstitutionTableEntries[i].Col5Char = rndReorderedUsableChars[i * multiplier + 4];
+                        myWindowModel.SubstitutionTableEntries[i].Col5Char = rndReorderedUsableChars[(i * multiplier) + 4];
                         continue;
                     }
 
-                    myWindowModel.SubstitutionTableEntries[i].Col4Char = rndReorderedUsableChars[i * multiplier + 4];
-                    myWindowModel.SubstitutionTableEntries[i].Col5Char = rndReorderedUsableChars[i * multiplier + 5];
+                    myWindowModel.SubstitutionTableEntries[i].Col4Char = rndReorderedUsableChars[(i * multiplier) + 4];
+                    myWindowModel.SubstitutionTableEntries[i].Col5Char = rndReorderedUsableChars[(i * multiplier) + 5];
                 }
                 else
                 {
                     myWindowModel.SubstitutionTableEntries[i + 1].Col0Char = rndReorderedUsableChars[i * multiplier];
-                    myWindowModel.SubstitutionTableEntries[i + 1].Col1Char = rndReorderedUsableChars[i * multiplier + 1];
-                    myWindowModel.SubstitutionTableEntries[i + 1].Col2Char = rndReorderedUsableChars[i * multiplier + 2];
-                    myWindowModel.SubstitutionTableEntries[i + 1].Col3Char = rndReorderedUsableChars[i * multiplier + 3];
-                    myWindowModel.SubstitutionTableEntries[i + 1].Col5Char = rndReorderedUsableChars[i * multiplier + 4];
+                    myWindowModel.SubstitutionTableEntries[i + 1].Col1Char = rndReorderedUsableChars[(i * multiplier) + 1];
+                    myWindowModel.SubstitutionTableEntries[i + 1].Col2Char = rndReorderedUsableChars[(i * multiplier) + 2];
+                    myWindowModel.SubstitutionTableEntries[i + 1].Col3Char = rndReorderedUsableChars[(i * multiplier) + 3];
+                    myWindowModel.SubstitutionTableEntries[i + 1].Col5Char = rndReorderedUsableChars[(i * multiplier) + 4];
                     break;
                 }
             }
@@ -187,8 +213,7 @@ namespace CSharp_ADFGVX_Cipher_WPF.Views
                 }
             }
 
-            textBox.MoveFocus(new TraversalRequest(FocusNavigationDirection.Next));
-            //Keyboard.ClearFocus();
+            LabelSubsTbl.Focus();
         }
 
         private void TextBox_MouseEnter(object sender, MouseEventArgs e)

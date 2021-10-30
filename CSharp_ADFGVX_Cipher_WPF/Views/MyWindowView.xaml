@@ -18,7 +18,6 @@
             <Setter Property="Icon" Value="C:\Users\molsak\source\repos\CSharp_ADFGVX_Cipher_WPF\CSharp_ADFGVX_Cipher_WPF\Assets\encryption_logo_black.png" />
             <Setter Property="MinWidth" Value="1200" />
             <Setter Property="MinHeight" Value="800" />
-            <!--<Setter Property="UseLayoutRounding" Value="False"/>-->
         </Style>
     </Window.Style>
 
@@ -93,7 +92,7 @@
             <Setter Property="FontSize" Value="16" />
             <Setter Property="FontWeight" Value="Bold" />
             <Setter Property="Foreground" Value="White" />
-            <Setter Property="BorderBrush" Value="DarkBlue" />
+            <Setter Property="BorderBrush" Value="Black" />
             <Setter Property="BorderThickness" Value="1" />
             <Setter Property="HorizontalContentAlignment" Value="Center" />
             <Setter Property="VerticalContentAlignment" Value="Center" />
@@ -127,7 +126,7 @@
             <Setter Property="Background" Value="White" />
             <Setter Property="Foreground" Value="Black" />
             <Setter Property="BorderThickness" Value="1" />
-            <Setter Property="BorderBrush" Value="DarkBlue" />
+            <Setter Property="BorderBrush" Value="Black" />
             <Setter Property="VerticalAlignment" Value="Top" />
             <Setter Property="HorizontalAlignment" Value="Stretch" />
             <Setter Property="OverridesDefaultStyle" Value="False" />
@@ -142,7 +141,7 @@
             <Setter Property="TextWrapping" Value="Wrap" />
             <Setter Property="CharacterCasing" Value="Upper" />
             <Setter Property="InputScope" Value="Default" />
-            <Setter Property="BorderBrush" Value="DarkBlue" />
+            <Setter Property="BorderBrush" Value="Black" />
             <Setter Property="BorderThickness" Value="1,0,1,1" />
             <Setter Property="ClipToBounds" Value="True" />
             <Setter Property="HorizontalAlignment" Value="Stretch" />
@@ -232,67 +231,18 @@
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto" />
-                <ColumnDefinition Width="130" />
-                <ColumnDefinition Width="130" />
-                <ColumnDefinition Width="130" />
+                <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
 
             <Label
+                x:Name="LabelSubsTbl"
                 Grid.Row="0"
                 Grid.Column="0"
                 HorizontalContentAlignment="Center"
                 Content="SUBSTITUTION TABLE"
-                Style="{StaticResource StyleLabelBasic}" />
-
-            <Label
-                Grid.Row="0"
-                Grid.Column="1"
-                Content="SIZE"
-                Style="{StaticResource StyleLabelBasic}" />
-
-
-            <StackPanel Grid.Row="1" Grid.Column="1">
-                <Button
-                    x:Name="ButtonIncrease"
-                    Background="OliveDrab"
-                    Click="ButtonIncrease_Click"
-                    Content="6"
-                    Style="{StaticResource StyleButtonBasic}" />
-
-
-                <Button
-                    x:Name="ButtonDecrease"
-                    Background="PaleVioletRed"
-                    Click="ButtonDecrease_Click"
-                    Content="5"
-                    Style="{StaticResource StyleButtonBasic}" />
-
-            </StackPanel>
-
-            <Label
-                Grid.Row="0"
-                Grid.Column="2"
-                Content="GENERATE"
-                Style="{StaticResource StyleLabelBasic}" />
-
-            <StackPanel Grid.Row="1" Grid.Column="2">
-                <Button
-                    x:Name="ButtonRandom"
-                    Background="CadetBlue"
-                    Click="ButtonRandom_Click"
-                    Content="RANDOM"
-                    Style="{StaticResource StyleButtonBasic}" />
-
-
-                <Button
-                    x:Name="ButtonEmpty"
-                    Background="CadetBlue"
-                    Click="ButtonEmpty_Click"
-                    Content="EMPTY"
-                    Style="{StaticResource StyleButtonBasic}" />
-
-            </StackPanel>
+                Style="{StaticResource StyleLabelBasic}" 
+                Focusable="True"/>
 
             <Popup
                 x:Name="PopUpSubsTableToolTip"
@@ -308,7 +258,7 @@
 
             <ListView
                 Grid.Row="1"
-                Grid.Column="0"        
+                Grid.Column="0"
                 ItemsSource="{Binding SubstitutionTableEntries}"
                 SelectionMode="Single"
                 Height="210"
@@ -431,14 +381,84 @@
                 </ListView.View>
             </ListView>
 
-            <Label
+            <Grid 
                 Grid.Row="0"
-                Grid.Column="3"
-                Content="LOCALIZATION"
-                Style="{StaticResource StyleLabelBasic}" />
+                Grid.RowSpan="2"
+                Grid.Column="1">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="130"/>
+                    <ColumnDefinition Width="130"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
 
-            <StackPanel Grid.Row="1" Grid.Column="3">
+                <Label
+                    Grid.Row="0"
+                    Grid.Column="0"
+                    Grid.ColumnSpan="2"
+                    Content="SUBSTITUTION TABLE"
+                    Style="{StaticResource StyleLabelBasic}" />
+
+                <StackPanel Grid.Row="1" Grid.Column="0">
+                    <Label
+                        Content="SIZE"
+                        Style="{StaticResource StyleLabelBasic}" />
+
+                    <Button
+                        x:Name="ButtonIncrease"
+                        Background="OliveDrab"
+                        Click="ButtonIncrease_Click"
+                        Content="6"
+                        Style="{StaticResource StyleButtonBasic}" />
+
+
+                    <Button
+                        x:Name="ButtonDecrease"
+                        Background="PaleVioletRed"
+                        Click="ButtonDecrease_Click"
+                        Content="5"
+                        Style="{StaticResource StyleButtonBasic}" />
+
+                </StackPanel>
+
+                <StackPanel Grid.Row="1" Grid.Column="1">
+                    <Label
+                        Content="GENERATE"
+                        Style="{StaticResource StyleLabelBasic}" />
+
+                    <Button
+                        x:Name="ButtonRandom"
+                        Background="CadetBlue"
+                        Click="ButtonRandom_Click"
+                        Content="RANDOM"
+                        Style="{StaticResource StyleButtonBasic}" />
+
+
+                    <Button
+                        x:Name="ButtonEmpty"
+                        Background="CadetBlue"
+                        Click="ButtonEmpty_Click"
+                        Content="EMPTY"
+                        Style="{StaticResource StyleButtonBasic}" />
+
+                </StackPanel>
+
+                <Label
+                    Grid.Row="2"
+                    Grid.Column="0"
+                    Grid.ColumnSpan="2"
+                    Content="LOCALIZATION"
+                    Style="{StaticResource StyleLabelBasic}" />
+
                 <Button
+                    Grid.Column="0"
+                    Grid.Row="3"
                     x:Name="ButtonEnglish"
                     Background="OliveDrab"
                     Click="ButtonEnglish_Click"
@@ -446,22 +466,45 @@
                     Style="{StaticResource StyleButtonBasic}" />
 
                 <Button
+                    Grid.Column="1"
+                    Grid.Row="3"
                     x:Name="ButtonCzech"
                     Background="PaleVioletRed"
                     Click="ButtonCzech_Click"
                     Content="CZECH"
                     Style="{StaticResource StyleButtonBasic}" />
-            </StackPanel>
+
+                <Label
+                    Grid.Column="0"
+                    Grid.ColumnSpan="2"
+                    Grid.Row="4"
+                    Content="KEYWORD"
+                    Style="{StaticResource StyleLabelBasic}" />
+
+                <Button
+                    Grid.Column="0"
+                    Grid.Row="5"
+                    Background="CadetBlue"
+                    Content="RANDOM"
+                    Style="{StaticResource StyleButtonBasic}" />
+
+                <Button
+                    Grid.Column="1"
+                    Grid.Row="5"
+                    Background="CadetBlue"
+                    Content="EMPTY"
+                    Style="{StaticResource StyleButtonBasic}" />
+            </Grid>
 
             <Label
                 Grid.Row="0"
-                Grid.Column="4"
+                Grid.Column="3"
                 Content="FILTER TABLE"
                 Style="{StaticResource StyleLabelBasic}" />
 
             <ListView
                 Grid.Row="1"
-                Grid.Column="4"
+                Grid.Column="2"
                 ItemsSource="{Binding InputFilterObservableEntries}"
                 ScrollViewer.CanContentScroll="False"
                 ScrollViewer.VerticalScrollBarVisibility="Auto"
@@ -494,7 +537,6 @@
                     </GridView>
                 </ListView.View>
             </ListView>
-
         </Grid>
         <!--#endregion-->
 
@@ -519,7 +561,8 @@
                 Grid.Row="1"
                 Grid.Column="0"
                 Style="{StaticResource StyleTextBoxBasicForInOut}"
-                Text="{Binding Input, Mode=TwoWay}" />
+                Text="{Binding Input, Mode=TwoWay}"
+                KeyDown="TextBox_KeyDown"/>
         </Grid>
         <!--#endregion-->
 
@@ -543,7 +586,7 @@
             <TextBox
                 Grid.Row="1"
                 Grid.Column="0"
-                Focusable="False"
+                Focusable="True"
                 IsHitTestVisible="False"
                 IsReadOnly="True"
                 Style="{StaticResource StyleTextBoxBasicForInOut}"
