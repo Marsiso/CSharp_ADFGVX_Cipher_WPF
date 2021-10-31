@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Windows.Input;
 
 namespace CSharp_ADFGVX_Cipher_WPF.Models
 {
@@ -16,6 +17,9 @@ namespace CSharp_ADFGVX_Cipher_WPF.Models
         private static readonly IReadOnlyList<string> charAsStringEnglish = new string[] { "XNULAX", "XIEDNAX", "XDVAX", "XTRIX", "XCTYRYX", "XPETX", "XSESTX", "XSEDUMX", "XOSUMX", "XDEVETX" };
         private static readonly IReadOnlyList<string> charAsStringCzech = new string[] { "XNULAX", "XJEDNAX", "XDVAX", "XTRIX", "XCTYRYX", "XPETX", "XSESTX", "XSEDUMX", "XOSUMX", "XDEVETX" };
 
+        public ICommand CommandLocalizationEnglish => new CommandHandler(() => IsLocalizationEnglish = true, () => true);
+
+        public ICommand CommandLocalizationCzech => new CommandHandler(() => IsLocalizationEnglish = false, () => true);
 
         public Dictionary<char, int> SubstitutionTableChars { get => substitutionTableChars; }
 

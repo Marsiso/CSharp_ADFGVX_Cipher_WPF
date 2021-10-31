@@ -4,6 +4,7 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System;
 using System.Linq;
+using System.Windows.Input;
 
 namespace CSharp_ADFGVX_Cipher_WPF.Models
 {
@@ -14,7 +15,26 @@ namespace CSharp_ADFGVX_Cipher_WPF.Models
         private bool mode;
         private readonly Dictionary<char, string> encryptionCharFilter;
         private const string cipherName = "ADFGVX";
-        private const string cipherNameShortened = "ADFGX";
+        private const string cipherNameShort = "ADFGX";
+
+        ICommand CommandSetModeEncryption { get => new CommandHandler(() => 
+        { 
+            if (!Mode)
+            {
+                Mode = true;
+            }
+        }, () => true); }
+
+        ICommand CommandSetModeDecryption
+        {
+            get => new CommandHandler(() =>
+            {
+                if (Mode)
+                {
+                    Mode = false;
+                }
+            }, () => true);
+        }
 
         public string Input
         {
@@ -22,7 +42,7 @@ namespace CSharp_ADFGVX_Cipher_WPF.Models
             set
             {
                 SetValue(ref input, value);
-                Output = Encrypt(value);
+                Output = Mode ? Encrypt(value) : Decrypt(value);
             }
         }
 

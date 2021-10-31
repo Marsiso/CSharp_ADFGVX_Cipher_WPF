@@ -28,14 +28,14 @@
               
                     L10,10
                     z"            
-              Fill="White"
+              Fill="AliceBlue"
               Height="65"
               MinWidth="195"
               Width="{Binding ElementName=TextBlockPopUp, Path=ActualWidth}"
-              Stroke="DarkBlue"
+              Stroke="Transparent"
               Stretch="Fill"
               Margin="10"
-              StrokeThickness="1">
+              StrokeThickness="0">
 
         </Path>
 
@@ -46,6 +46,8 @@
                    Panel.ZIndex="1"
                    HorizontalAlignment="Center"
                    VerticalAlignment="Center"
+                   Foreground="Black"
+                   Background="Transparent"
                    Text="{Binding CharsRemainingSubsTblStr}">
         </TextBlock>
 

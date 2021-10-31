@@ -4,7 +4,10 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Security.Cryptography;
 using System.Text;
+using System.Windows.Input;
+using System.Collections.Specialized;
 
 namespace CSharp_ADFGVX_Cipher_WPF.Models
 {
@@ -14,6 +17,93 @@ namespace CSharp_ADFGVX_Cipher_WPF.Models
 
         private readonly char[,] substitutionTable;
         private string charsRemainingSubsTblStr;
+
+        public ICommand CommandSubsTblRandomize { get => new CommandHandler(() => 
+        { 
+            static int GetNextInt32(RNGCryptoServiceProvider rnd)
+            {
+                byte[] randomInt = new byte[4];
+                rnd.GetBytes(randomInt);
+                return Convert.ToInt32(randomInt[0]);
+            }
+
+            RNGCryptoServiceProvider rnd = new RNGCryptoServiceProvider();
+            char[] rndReorderedUsableChars = SubstitutionTableChars.
+                Where(entry => entry.Value.Equals(0)).
+                Select(entry => entry.Key).
+                OrderBy(key => GetNextInt32(rnd)).
+                ToArray();
+
+            int multiplier = IsFullSize 
+            ? 6 
+            : 5;
+            for (int i = 0; i < multiplier; ++i)
+            {
+                if (IsFullSize || !i.Equals(4))
+                {
+                    SubstitutionTableEntries[i].Col0Char = rndReorderedUsableChars[i * multiplier];
+                    SubstitutionTableEntries[i].Col1Char = rndReorderedUsableChars[(i * multiplier) + 1];
+                    SubstitutionTableEntries[i].Col2Char = rndReorderedUsableChars[(i * multiplier) + 2];
+                    SubstitutionTableEntries[i].Col3Char = rndReorderedUsableChars[(i * multiplier) + 3];
+                    if (!IsFullSize)
+                    {
+                        SubstitutionTableEntries[i].Col5Char = rndReorderedUsableChars[(i * multiplier) + 4];
+                        continue;
+                    }
+
+                    SubstitutionTableEntries[i].Col4Char = rndReorderedUsableChars[(i * multiplier) + 4];
+                    SubstitutionTableEntries[i].Col5Char = rndReorderedUsableChars[(i * multiplier) + 5];
+                }
+                else
+                {
+                    SubstitutionTableEntries[i + 1].Col0Char = rndReorderedUsableChars[i * multiplier];
+                    SubstitutionTableEntries[i + 1].Col1Char = rndReorderedUsableChars[(i * multiplier) + 1];
+                    SubstitutionTableEntries[i + 1].Col2Char = rndReorderedUsableChars[(i * multiplier) + 2];
+                    SubstitutionTableEntries[i + 1].Col3Char = rndReorderedUsableChars[(i * multiplier) + 3];
+                    SubstitutionTableEntries[i + 1].Col5Char = rndReorderedUsableChars[(i * multiplier) + 4];
+                    break;
+                }
+            }
+
+            CharsRemainingSubsTblStr = string.Empty;
+        },() => true); }
+
+        public ICommand CommandSubsTblEmpty
+        {
+            get => new CommandHandler(() =>
+            {
+                foreach (SubstitutionTableEntry entry in substitutionTableEntries)
+                {
+                    entry.Col0Char = entry.Col1Char = entry.Col2Char = entry.Col3Char = entry.Col4Char = entry.Col5Char = ' ';
+                }
+            }, () => true);
+        }
+
+        public ICommand CommandSubsTblMaxSize
+        {
+            get => new CommandHandler(() =>
+            {
+                foreach (SubstitutionTableEntry entry in substitutionTableEntries)
+                {
+                    entry.Col0Char = entry.Col1Char = entry.Col2Char = entry.Col3Char = entry.Col4Char = entry.Col5Char = ' ';
+                }
+                IsFullSize = true;
+                SubstitutionTableEntries[4].EntryHeight = 25;
+            }, () => true);
+        }
+
+        public ICommand CommandSubsTblMinSize
+        {
+            get => new CommandHandler(() =>
+            {
+                foreach (SubstitutionTableEntry entry in substitutionTableEntries)
+                {
+                    entry.Col0Char = entry.Col1Char = entry.Col2Char = entry.Col3Char = entry.Col4Char = entry.Col5Char = ' ';
+                }
+                IsFullSize = false;
+                SubstitutionTableEntries[4].EntryHeight = 0;
+            }, () => true);
+        }
 
         public ObservableCollection<SubstitutionTableEntry> SubstitutionTableEntries
         {

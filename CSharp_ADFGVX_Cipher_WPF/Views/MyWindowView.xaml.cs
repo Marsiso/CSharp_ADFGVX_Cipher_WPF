@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Linq;
 using System.Security.Cryptography;
-using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
@@ -15,8 +14,6 @@ namespace CSharp_ADFGVX_Cipher_WPF.Views
     /// </summary>
     public partial class MyWindowView : Window
     {
-        private bool isSubsTblCharChckEnabled = true;
-
         public MyWindowView()
         {
             InitializeComponent();
@@ -36,144 +33,8 @@ namespace CSharp_ADFGVX_Cipher_WPF.Views
                 return;
             }
 
-            _ = ((sender as TextBox)?.MoveFocus(new TraversalRequest(FocusNavigationDirection.Down)));
+            _ = ((sender as TextBox)?.MoveFocus(new TraversalRequest(FocusNavigationDirection.Next)));
         }
-
-        private void ButtonEnglish_Click(object sender, RoutedEventArgs e)
-        {
-            if (myWindowModel.IsLocalizationEnglish)
-            {
-                return;
-            }
-
-            myWindowModel.IsLocalizationEnglish = true;
-            if (!myWindowModel.IsFullSize)
-            {
-                ClearSubsTable();
-            }
-
-            ButtonEnglish.Background = new SolidColorBrush(Color.FromRgb(107, 142, 35));
-            ButtonCzech.Background = new SolidColorBrush(Color.FromRgb(219, 112, 147));
-        }
-
-        private void ButtonCzech_Click(object sender, RoutedEventArgs e)
-        {
-            if (!myWindowModel.IsLocalizationEnglish)
-            {
-                return;
-            }
-
-            myWindowModel.IsLocalizationEnglish = false;
-            if (!myWindowModel.IsFullSize)
-            {
-                ClearSubsTable();
-            }
-
-            ButtonCzech.Background = new SolidColorBrush(Color.FromRgb(107, 142, 35));
-            ButtonEnglish.Background = new SolidColorBrush(Color.FromRgb(219, 112, 147));
-        }
-
-        private void ButtonIncrease_Click(object sender, RoutedEventArgs e)
-        {
-            if (myWindowModel.IsFullSize)
-            {
-                return;
-            }
-
-            myWindowModel.IsFullSize = true;
-            myWindowModel.SubstitutionTableEntries[4].EntryHeight = 25;
-            GridViewSubsTable.Columns[5].Width = 60;
-            ButtonIncrease.Background = new SolidColorBrush(Color.FromRgb(107, 142, 35));
-            ButtonDecrease.Background = new SolidColorBrush(Color.FromRgb(219, 112, 147));
-        }
-
-        private void ButtonDecrease_Click(object sender, RoutedEventArgs e)
-        {
-            if (!myWindowModel.IsFullSize)
-            {
-                return;
-            }
-
-            myWindowModel.IsFullSize = false;
-            myWindowModel.SubstitutionTableEntries[4].EntryHeight = 0;
-            GridViewSubsTable.Columns[5].Width = 0;
-            ClearSubsTable();
-            ButtonDecrease.Background = new SolidColorBrush(Color.FromRgb(107, 142, 35));
-            ButtonIncrease.Background = new SolidColorBrush(Color.FromRgb(219, 112, 147));
-        }
-
-        private void ButtonEmpty_Click(object sender, RoutedEventArgs e) => ClearSubsTable();
-
-        private void ClearSubsTable()
-        {
-            isSubsTblCharChckEnabled = false;
-
-            for (int i = 0; i < 6; ++i)
-            {
-                myWindowModel.SubstitutionTableEntries[i].Col0Char =
-                    myWindowModel.SubstitutionTableEntries[i].Col1Char =
-                    myWindowModel.SubstitutionTableEntries[i].Col2Char =
-                    myWindowModel.SubstitutionTableEntries[i].Col3Char =
-                    myWindowModel.SubstitutionTableEntries[i].Col4Char =
-                    myWindowModel.SubstitutionTableEntries[i].Col5Char = ' ';
-            }
-
-            isSubsTblCharChckEnabled = true;
-            myWindowModel.CharsRemainingSubsTblStr = string.Empty;
-        }
-
-        private void RandomizeSubsTable()
-        {
-            static int GetNextInt32(RNGCryptoServiceProvider rnd)
-            {
-                byte[] randomInt = new byte[4];
-                rnd.GetBytes(randomInt);
-                return Convert.ToInt32(randomInt[0]);
-            }
-
-            RNGCryptoServiceProvider rnd = new RNGCryptoServiceProvider();
-            char[] rndReorderedUsableChars = myWindowModel.SubstitutionTableChars.
-                Where(entry => entry.Value.Equals(0)).
-                Select(entry => entry.Key).
-                OrderBy(key => GetNextInt32(rnd)).
-                ToArray();
-
-            isSubsTblCharChckEnabled = false;
-
-            int multiplier = myWindowModel.IsFullSize ? 6 : 5;
-            for (int i = 0; i < multiplier; ++i)
-            {
-                if (myWindowModel.IsFullSize || !i.Equals(4))
-                {
-                    myWindowModel.SubstitutionTableEntries[i].Col0Char = rndReorderedUsableChars[i * multiplier];
-                    myWindowModel.SubstitutionTableEntries[i].Col1Char = rndReorderedUsableChars[(i * multiplier) + 1];
-                    myWindowModel.SubstitutionTableEntries[i].Col2Char = rndReorderedUsableChars[(i * multiplier) + 2];
-                    myWindowModel.SubstitutionTableEntries[i].Col3Char = rndReorderedUsableChars[(i * multiplier) + 3];
-                    if (!myWindowModel.IsFullSize)
-                    {
-                        myWindowModel.SubstitutionTableEntries[i].Col5Char = rndReorderedUsableChars[(i * multiplier) + 4];
-                        continue;
-                    }
-
-                    myWindowModel.SubstitutionTableEntries[i].Col4Char = rndReorderedUsableChars[(i * multiplier) + 4];
-                    myWindowModel.SubstitutionTableEntries[i].Col5Char = rndReorderedUsableChars[(i * multiplier) + 5];
-                }
-                else
-                {
-                    myWindowModel.SubstitutionTableEntries[i + 1].Col0Char = rndReorderedUsableChars[i * multiplier];
-                    myWindowModel.SubstitutionTableEntries[i + 1].Col1Char = rndReorderedUsableChars[(i * multiplier) + 1];
-                    myWindowModel.SubstitutionTableEntries[i + 1].Col2Char = rndReorderedUsableChars[(i * multiplier) + 2];
-                    myWindowModel.SubstitutionTableEntries[i + 1].Col3Char = rndReorderedUsableChars[(i * multiplier) + 3];
-                    myWindowModel.SubstitutionTableEntries[i + 1].Col5Char = rndReorderedUsableChars[(i * multiplier) + 4];
-                    break;
-                }
-            }
-
-            isSubsTblCharChckEnabled = true;
-            myWindowModel.CharsRemainingSubsTblStr = string.Empty;
-        }
-
-        private void ButtonRandom_Click(object sender, RoutedEventArgs e) => RandomizeSubsTable();
 
         private void TextBox_GotMouseCapture(object sender, MouseEventArgs e)
         {
@@ -184,36 +45,31 @@ namespace CSharp_ADFGVX_Cipher_WPF.Views
 
         private void TextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
-            if (!isSubsTblCharChckEnabled)
-            {
-                return;
-            }
+            //TextBox textBox = sender as TextBox;
+            //if (string.IsNullOrWhiteSpace(textBox.Text) || !char.TryParse(textBox.Text, out char c))
+            //{
+            //    return;
+            //}
 
-            TextBox textBox = sender as TextBox;
-            if (string.IsNullOrWhiteSpace(textBox.Text) || !char.TryParse(textBox.Text, out char c))
-            {
-                return;
-            }
+            //if (!myWindowModel.SubstitutionTableChars.TryGetValue(c, out int num) || num.Equals(1))
+            //{
+            //    textBox.Text = "";
+            //    return;
+            //}
 
-            if (!myWindowModel.SubstitutionTableChars.TryGetValue(c, out int num) || num.Equals(1))
-            {
-                textBox.Text = "";
-                return;
-            }
+            //for (int i = 0; i < 6; ++i)
+            //{
+            //    for (int j = 0; j < 6; ++j)
+            //    {
+            //        if (myWindowModel.SubstitutionTable[i, j].Equals(c))
+            //        {
+            //            textBox.Text = "";
+            //            return;
+            //        }
+            //    }
+            //}
 
-            for (int i = 0; i < 6; ++i)
-            {
-                for (int j = 0; j < 6; ++j)
-                {
-                    if (myWindowModel.SubstitutionTable[i, j].Equals(c))
-                    {
-                        textBox.Text = "";
-                        return;
-                    }
-                }
-            }
-
-            LabelSubsTbl.Focus();
+            //LabelSubsTbl.Focus();
         }
 
         private void TextBox_MouseEnter(object sender, MouseEventArgs e)
@@ -234,5 +90,33 @@ namespace CSharp_ADFGVX_Cipher_WPF.Views
             PopUpSubsTableToolTip.Visibility = Visibility.Collapsed;
             PopUpSubsTableToolTip.IsOpen = false;
         }
+
+        private void ButtonExit_OnClick(object sender, RoutedEventArgs e) => Close();
+
+        private void ButtonMinimize_OnClick(object sender, RoutedEventArgs e) => WindowState = WindowState.Minimized;
+
+        private void ButtonMaximize_OnClick(object sender, RoutedEventArgs e) => WindowState = WindowState.Equals(WindowState.Normal)
+            ? WindowState.Maximized
+            : WindowState.Normal;
+
+        private void Window_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            if (!e.ChangedButton.Equals(MouseButton.Left))
+            {
+                return;
+            }
+            DragMove();
+        }
+
+        private void TextBox_GotFocus(object sender, RoutedEventArgs e)
+        {
+            TextBox textBox = sender as TextBox;
+            if (!string.IsNullOrEmpty(textBox.Text))
+                textBox.SelectAll();
+        }
+
+        private void ButtonSubsTblMaxSize_Click(object sender, RoutedEventArgs e) => GridViewSubsTable.Columns[5].Width = 40;
+
+        private void ButtonSubsTblMinSize_Click(object sender, RoutedEventArgs e) => GridViewSubsTable.Columns[5].Width = 0;
     }
 }
