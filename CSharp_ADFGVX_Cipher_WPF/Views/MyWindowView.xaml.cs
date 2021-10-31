@@ -43,35 +43,6 @@ namespace CSharp_ADFGVX_Cipher_WPF.Views
                 textBox.SelectAll();
         }
 
-        private void TextBox_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            //TextBox textBox = sender as TextBox;
-            //if (string.IsNullOrWhiteSpace(textBox.Text) || !char.TryParse(textBox.Text, out char c))
-            //{
-            //    return;
-            //}
-
-            //if (!myWindowModel.SubstitutionTableChars.TryGetValue(c, out int num) || num.Equals(1))
-            //{
-            //    textBox.Text = "";
-            //    return;
-            //}
-
-            //for (int i = 0; i < 6; ++i)
-            //{
-            //    for (int j = 0; j < 6; ++j)
-            //    {
-            //        if (myWindowModel.SubstitutionTable[i, j].Equals(c))
-            //        {
-            //            textBox.Text = "";
-            //            return;
-            //        }
-            //    }
-            //}
-
-            //LabelSubsTbl.Focus();
-        }
-
         private void TextBox_MouseEnter(object sender, MouseEventArgs e)
         {
             if (string.IsNullOrWhiteSpace(myWindowModel.CharsRemainingSubsTblStr))
@@ -106,13 +77,6 @@ namespace CSharp_ADFGVX_Cipher_WPF.Views
                 return;
             }
             DragMove();
-        }
-
-        private void TextBox_GotFocus(object sender, RoutedEventArgs e)
-        {
-            TextBox textBox = sender as TextBox;
-            if (!string.IsNullOrEmpty(textBox.Text))
-                textBox.SelectAll();
         }
 
         private void ButtonSubsTblMaxSize_Click(object sender, RoutedEventArgs e) => GridViewSubsTable.Columns[5].Width = 40;

@@ -5,6 +5,8 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.ComponentModel;
+using System.Windows.Input;
+using System.Security.Cryptography;
 
 namespace CSharp_ADFGVX_Cipher_WPF.Models
 {
@@ -63,6 +65,46 @@ namespace CSharp_ADFGVX_Cipher_WPF.Models
 
             store = strBuilder.ToString();
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+        }
+
+        public ICommand CommandKeyWordEmpty
+        {
+            get => new CommandHandler(() =>
+            {
+                KeyWord = string.Empty;
+                Output = string.Empty;
+            }, () => true);
+        }
+
+        public ICommand CommandKeyWordRandomize
+        {
+            get => new CommandHandler(() =>
+            {
+                RNGCryptoServiceProvider rnd = new RNGCryptoServiceProvider();
+                const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+
+                if (Input.Length > 0)
+                {
+                    KeyWord = new string(Enumerable.
+                        Repeat(chars, Input.Length).
+                        Select(s => s.OrderBy(c => GetNextInt32(rnd)).First()).ToArray());
+                    Output = Mode
+                        ? Encrypt(Input)
+                        : Decrypt(Input);
+                }
+                else
+                {
+                    KeyWord = string.Empty;
+                    Output = string.Empty;
+                }
+            }, () => true);
+        }
+
+        private static int GetNextInt32(RNGCryptoServiceProvider rnd)
+        {
+            byte[] randomInt = new byte[4];
+            rnd.GetBytes(randomInt);
+            return Convert.ToInt32(randomInt[0]);
         }
     }
 }

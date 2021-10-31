@@ -5,6 +5,9 @@ using System.Text;
 using System;
 using System.Linq;
 using System.Windows.Input;
+using Microsoft.Win32;
+using System.IO;
+using System.Windows;
 
 namespace CSharp_ADFGVX_Cipher_WPF.Models
 {
@@ -17,24 +20,55 @@ namespace CSharp_ADFGVX_Cipher_WPF.Models
         private const string cipherName = "ADFGVX";
         private const string cipherNameShort = "ADFGX";
 
-        ICommand CommandSetModeEncryption { get => new CommandHandler(() => 
+        public ICommand CommandModeEncrypt
+        { get => new CommandHandler(() => 
         { 
             if (!Mode)
             {
                 Mode = true;
+                Output = Encrypt(Input);
             }
         }, () => true); }
 
-        ICommand CommandSetModeDecryption
+        public ICommand CommandModeDecrypt
         {
             get => new CommandHandler(() =>
             {
                 if (Mode)
                 {
                     Mode = false;
+                    Output = Decrypt(Input);
                 }
             }, () => true);
         }
+
+        public ICommand CommandInputOpen
+        {
+            get => new CommandHandler(() =>
+            {
+                OpenFileDialog openFileDialog = new ();
+                openFileDialog.Filter = "Text file (*.txt)|*.txt|Data file (*.dat)|*.dat";
+                openFileDialog.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+                if (openFileDialog.ShowDialog() == true)
+                    Input = File.ReadAllText(openFileDialog.FileName).ToUpper();
+            }, () => true);
+        }
+
+        public ICommand CommandOutputSave
+        {
+            get => new CommandHandler(() =>
+            {
+                SaveFileDialog saveFileDialog = new ();
+                saveFileDialog.Filter = "Text file (*.txt)|*.txt|Data file (*.dat)|*.dat";
+                saveFileDialog.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+                if (saveFileDialog.ShowDialog() == true)
+                    File.WriteAllText(saveFileDialog.FileName, Output);
+            }, () => true);
+        }
+
+        public ICommand CommandOutputCopy => new CommandHandler(() => Clipboard.SetText(Output), () => true);
+
+        public ICommand CommandInputPaste => new CommandHandler(() => Input = Clipboard.GetText(), () => true);
 
         public string Input
         {
@@ -52,7 +86,6 @@ namespace CSharp_ADFGVX_Cipher_WPF.Models
             set => SetValue(ref output, value);
         }
 
-        // TODO Re-Encrypt/Decrypt Input
         public bool Mode 
         { 
             get => mode; 
@@ -199,70 +232,54 @@ namespace CSharp_ADFGVX_Cipher_WPF.Models
                 return string.Empty;
             }
 
-
             // Filter input
-            string strFiltered = str.Where(c => isFullSize ? "ADFGVX".Contains(c) : "ADFGX".Contains(c)).ToString();
+            string strFiltered = new string(str.Where(c => isFullSize ? "ADFGVX".Contains(c) : "ADFGX".Contains(c)).ToArray());
             if (strFiltered.Length % 2 > 0)
             {
                 return string.Empty;
             }
+            int origLen = strFiltered.Length;
 
             // Length of substrings
-            int subStringLength = Convert.ToInt32(Math.Ceiling(strFiltered.Length / (double)keyWord.Length));
+            int lenSubstring = strFiltered.Length / keyWord.Length;
+            int numLongerSubstrings = strFiltered.Length % keyWord.Length;
 
             // Initialize field of StringBuilders
-            List<Tuple<char, StringBuilder>> stringBuilders = new();
+            List<Tuple<int, char, int, StringBuilder>> stringBuilders = new();
             for (int i = 0; i < keyWord.Length; ++i)
             {
-                stringBuilders.Add(new Tuple<char, StringBuilder>(keyWord[i], new StringBuilder(capacity: subStringLength)));
+                if (numLongerSubstrings > 0)
+                {
+                    stringBuilders.Add(new Tuple<int, char, int, StringBuilder>(i, keyWord[i], lenSubstring + 1, new StringBuilder(capacity: lenSubstring)));
+                    --numLongerSubstrings;
+                    continue;
+                }
+
+                stringBuilders.Add(new Tuple<int, char, int, StringBuilder>(i, keyWord[i], lenSubstring, new StringBuilder(capacity: lenSubstring)));
             }
 
             // Order list
-            stringBuilders = stringBuilders.OrderBy(entry => entry.Item1).ToList();
+            stringBuilders = stringBuilders.OrderBy(entry => entry.Item2).ToList();
 
-            // Build list of substrings
-            int j = 0;
-            for (int i = 0; i < strFiltered.Length; i += subStringLength, ++j)
+            // Split input
+            foreach (Tuple<int, char, int, StringBuilder> stringBuilder in stringBuilders)
             {
-                _ = stringBuilders[j].Item2.Append(strFiltered, i, subStringLength);
+                stringBuilder.Item4.Append(strFiltered.Take(stringBuilder.Item3));
+                strFiltered = strFiltered.Remove(0, stringBuilder.Item3 - 1);
             }
 
             // Reorder list
-            StringBuilder[] stringBuildersReordered = new StringBuilder[keyWord.Length];
-            if (keyWord.Length > 1)
+            stringBuilders = stringBuilders.OrderBy(entry => entry.Item1).ToList();
+
+            // Build output
+            StringBuilder outputStrBuilder = new StringBuilder();
+            for (int i = 0; i < origLen; ++i)
             {
-                for (int i = 0; i < keyWord.Length; ++i)
-                {
-                    char c = keyWord[i];
-                    for (j = 0; j < stringBuilders.Count; ++j)
-                    {
-                        if (stringBuilders[j].Item1.Equals(c))
-                        {
-                            stringBuildersReordered[i] = stringBuilders[j].Item2;
-                            stringBuilders.RemoveAt(j);
-                            break;
-                        }
-                    }
-                }
+                outputStrBuilder.Append(stringBuilders[i % KeyWord.Length].Item4[0]);
+                _ = stringBuilders[i % KeyWord.Length].Item4.Remove(0, 1);
             }
 
-            StringBuilder stringBuilder = new StringBuilder(capacity: strFiltered.Length);
-            for (int i = 0; i < strFiltered.Length; ++i)
-            {
-                _ = stringBuilder.Append(stringBuildersReordered[i][0]);
-                _ = stringBuildersReordered[i].Remove(0, 1);
-            }
-
-            // Substitute substring
-            for (int i = 0; i < strFiltered.Length; i += 2)
-            {
-                string temp = new string($"{stringBuilder[i]}{stringBuilder[i + 1]}");
-                stringBuilder[i] = temp[0];
-                stringBuilder[i + 1] = temp[1];
-            }
-
-            // Join substrings and return value
-            return stringBuilder.ToString();
+            return outputStrBuilder.ToString();
         }
     }
 }

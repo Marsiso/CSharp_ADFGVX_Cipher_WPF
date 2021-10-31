@@ -21,6 +21,8 @@ namespace CSharp_ADFGVX_Cipher_WPF.Models
             public MyWindowModel MyWindowModel { get; set; }
             public int Id { get; init; }
 
+            public bool IsGeneratorActive { get; set; }
+
             public SubstitutionTableEntry(int id, char c0, char c1, char c2, char c3,
                 char c4, char c5, in MyWindowModel myWiewModel, int hight = 25)
             {
@@ -38,6 +40,7 @@ namespace CSharp_ADFGVX_Cipher_WPF.Models
                     5 => 'X',
                     _ => ' '
                 };
+                IsGeneratorActive = false;
                 Col0Char = c0;
                 Col1Char = c1;
                 Col2Char = c2;
@@ -99,6 +102,10 @@ namespace CSharp_ADFGVX_Cipher_WPF.Models
 
             private void SetValue(ref char store, char value, [CallerMemberName] string name = null)
             {
+                if (!IsGeneratorActive && IsValueContained(value))
+                {
+                    value = store;
+                }
                 store = value;
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
                 int column = name switch
@@ -113,6 +120,29 @@ namespace CSharp_ADFGVX_Cipher_WPF.Models
                 };
                 MyWindowModel.SubstitutionTable[Id, column] = value;
                 MyWindowModel.CharsRemainingSubsTblStr = string.Empty;
+            }
+
+            private bool IsValueContained(in char value)
+            {
+                if (!char.IsLetterOrDigit(value) || 
+                    !MyWindowModel.SubstitutionTableChars.TryGetValue(value, out int num) || 
+                    num.Equals(1))
+                {
+                    return true;
+                }
+
+                for (int i = 0; i < 6; ++i)
+                {
+                    for (int j = 0; j < 6; ++j)
+                    {
+                        if (MyWindowModel.SubstitutionTable[i, j].Equals(value))
+                        {
+                            return true;
+                        }
+                    }
+                }
+
+                return false;
             }
         }
     }

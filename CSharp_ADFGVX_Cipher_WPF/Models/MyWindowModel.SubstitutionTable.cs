@@ -20,13 +20,6 @@ namespace CSharp_ADFGVX_Cipher_WPF.Models
 
         public ICommand CommandSubsTblRandomize { get => new CommandHandler(() => 
         { 
-            static int GetNextInt32(RNGCryptoServiceProvider rnd)
-            {
-                byte[] randomInt = new byte[4];
-                rnd.GetBytes(randomInt);
-                return Convert.ToInt32(randomInt[0]);
-            }
-
             RNGCryptoServiceProvider rnd = new RNGCryptoServiceProvider();
             char[] rndReorderedUsableChars = SubstitutionTableChars.
                 Where(entry => entry.Value.Equals(0)).
@@ -37,8 +30,11 @@ namespace CSharp_ADFGVX_Cipher_WPF.Models
             int multiplier = IsFullSize 
             ? 6 
             : 5;
+
+
             for (int i = 0; i < multiplier; ++i)
             {
+                SubstitutionTableEntries[i].IsGeneratorActive = true;
                 if (IsFullSize || !i.Equals(4))
                 {
                     SubstitutionTableEntries[i].Col0Char = rndReorderedUsableChars[i * multiplier];
@@ -63,30 +59,33 @@ namespace CSharp_ADFGVX_Cipher_WPF.Models
                     SubstitutionTableEntries[i + 1].Col5Char = rndReorderedUsableChars[(i * multiplier) + 4];
                     break;
                 }
+                SubstitutionTableEntries[i].IsGeneratorActive = false;
             }
 
             CharsRemainingSubsTblStr = string.Empty;
         },() => true); }
 
+        private void EmptySubstitutionTable()
+        {
+            for (int i = 0; i < SubstitutionTableEntries.Count; i++)
+            {
+                SubstitutionTableEntries[i].IsGeneratorActive = true;
+                SubstitutionTableEntry entry = SubstitutionTableEntries[i];
+                entry.Col0Char = entry.Col1Char = entry.Col2Char = entry.Col3Char = entry.Col4Char = entry.Col5Char = ' ';
+                SubstitutionTableEntries[i].IsGeneratorActive = false;
+            }
+        }
+
         public ICommand CommandSubsTblEmpty
         {
-            get => new CommandHandler(() =>
-            {
-                foreach (SubstitutionTableEntry entry in substitutionTableEntries)
-                {
-                    entry.Col0Char = entry.Col1Char = entry.Col2Char = entry.Col3Char = entry.Col4Char = entry.Col5Char = ' ';
-                }
-            }, () => true);
+            get => new CommandHandler(() => EmptySubstitutionTable(), () => true);
         }
 
         public ICommand CommandSubsTblMaxSize
         {
             get => new CommandHandler(() =>
             {
-                foreach (SubstitutionTableEntry entry in substitutionTableEntries)
-                {
-                    entry.Col0Char = entry.Col1Char = entry.Col2Char = entry.Col3Char = entry.Col4Char = entry.Col5Char = ' ';
-                }
+                EmptySubstitutionTable();
                 IsFullSize = true;
                 SubstitutionTableEntries[4].EntryHeight = 25;
             }, () => true);
@@ -96,10 +95,7 @@ namespace CSharp_ADFGVX_Cipher_WPF.Models
         {
             get => new CommandHandler(() =>
             {
-                foreach (SubstitutionTableEntry entry in substitutionTableEntries)
-                {
-                    entry.Col0Char = entry.Col1Char = entry.Col2Char = entry.Col3Char = entry.Col4Char = entry.Col5Char = ' ';
-                }
+                EmptySubstitutionTable();
                 IsFullSize = false;
                 SubstitutionTableEntries[4].EntryHeight = 0;
             }, () => true);
@@ -128,7 +124,6 @@ namespace CSharp_ADFGVX_Cipher_WPF.Models
             get => charsRemainingSubsTblStr;
             set => SetCharsRemainingSubsTblEntries(ref charsRemainingSubsTblStr, value);
         }
-
      
         private void SetCharsRemainingSubsTblEntries(ref string store, string value,
             [CallerMemberName] string name = null)

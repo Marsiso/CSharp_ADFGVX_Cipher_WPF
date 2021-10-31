@@ -10,9 +10,9 @@
     WindowStartupLocation="CenterScreen"
     WindowStyle="None"
     WindowState="Normal"
-    Width="554"
+    Width="527"
     Height="800"
-    MinWidth="554"
+    MinWidth="527"
     MinHeight="800"
     Title="ADFG(V)X Cipher"
     Icon="C:\Users\m_ols\Source\Repos\Marsiso\CSharp_ADFGVX_Cipher_WPF_Two\CSharp_ADFGVX_Cipher_WPF\Assets\encryption_logo_black.png"
@@ -347,9 +347,10 @@
                                 FontStyle="Italic"
                                 VerticalContentAlignment="Center"
                                 HorizontalContentAlignment="Center"
-                                Command="{Binding CommandKeyWordRandom}"
+                                Command="{Binding CommandKeyWordRandomize}"
                                 Margin="15,0,5,0"
-                                Style="{StaticResource StyleButtonGeneric}">
+                                Style="{StaticResource StyleButtonGeneric}"
+                                ToolTip="Generates random sequence of chars. Numbers of chars is equal to filtered input's length times two.">
                             <TextBlock TextDecorations="Underline">
                                        Randomize
                             </TextBlock>
@@ -367,6 +368,7 @@
                                 HorizontalContentAlignment="Center"
                                 Command="{Binding CommandKeyWordEmpty}"
                                 Margin="0,0,5,0"
+                                ToolTip="Clears keyword's chars buffer."
                                 Style="{StaticResource StyleButtonGeneric}">
                             <TextBlock TextDecorations="Underline">
                                        Empty
@@ -502,7 +504,8 @@
                             <ListView Grid.Row="2"
                                       ItemsSource="{Binding SubstitutionTableEntries}"
                                       SelectionMode="Single"
-                                      Height="220"
+                                      Height="228"
+                                      Width="286"
                                       x:Name="ListViewSubsTable">
                                 <ListView.Style>
                                     <Style BasedOn="{StaticResource StyleListViewBasic}" TargetType="ListView" />
@@ -539,10 +542,8 @@
                                                             KeyDown="TextBox_KeyDown"
                                                             MouseEnter="TextBox_MouseEnter"
                                                             MouseLeave="TextBox_MouseLeave"
-                                                            GotFocus="TextBox_GotFocus"
                                                             Style="{StaticResource StyleTextBoxBasic}"
-                                                            Text="{Binding Col0Char, Mode=TwoWay}"
-                                                            TextChanged="TextBox_TextChanged" />
+                                                            Text="{Binding Col0Char, Mode=TwoWay}"/>
                                                     </Border>
                                                 </DataTemplate>
                                             </GridViewColumn.CellTemplate>
@@ -558,10 +559,8 @@
                                                             KeyDown="TextBox_KeyDown"
                                                             MouseEnter="TextBox_MouseEnter"
                                                             MouseLeave="TextBox_MouseLeave"
-                                                            GotFocus="TextBox_GotFocus"
                                                             Style="{StaticResource StyleTextBoxBasic}"
-                                                            Text="{Binding Col1Char, Mode=TwoWay}"
-                                                            TextChanged="TextBox_TextChanged" />
+                                                            Text="{Binding Col1Char, Mode=TwoWay}"/>
                                                     </Border>
                                                 </DataTemplate>
                                             </GridViewColumn.CellTemplate>
@@ -577,10 +576,8 @@
                                                             KeyDown="TextBox_KeyDown"
                                                             MouseEnter="TextBox_MouseEnter"
                                                             MouseLeave="TextBox_MouseLeave"
-                                                            GotFocus="TextBox_GotFocus"
                                                             Style="{StaticResource StyleTextBoxBasic}"
-                                                            Text="{Binding Col2Char, Mode=TwoWay}"
-                                                            TextChanged="TextBox_TextChanged" />
+                                                            Text="{Binding Col2Char, Mode=TwoWay}"/>
                                                     </Border>
                                                 </DataTemplate>
                                             </GridViewColumn.CellTemplate>
@@ -596,10 +593,8 @@
                                                             KeyDown="TextBox_KeyDown"
                                                             MouseEnter="TextBox_MouseEnter"
                                                             MouseLeave="TextBox_MouseLeave"
-                                                            GotFocus="TextBox_GotFocus"
                                                             Style="{StaticResource StyleTextBoxBasic}"
-                                                            Text="{Binding Col3Char, Mode=TwoWay}"
-                                                            TextChanged="TextBox_TextChanged" />
+                                                            Text="{Binding Col3Char, Mode=TwoWay}"/>
                                                     </Border>
                                                 </DataTemplate>
                                             </GridViewColumn.CellTemplate>
@@ -615,10 +610,8 @@
                                                             KeyDown="TextBox_KeyDown"
                                                             MouseEnter="TextBox_MouseEnter"
                                                             MouseLeave="TextBox_MouseLeave"
-                                                            GotFocus="TextBox_GotFocus"
                                                             Style="{StaticResource StyleTextBoxBasic}"
-                                                            Text="{Binding Col4Char, Mode=TwoWay}"
-                                                            TextChanged="TextBox_TextChanged" />
+                                                            Text="{Binding Col4Char, Mode=TwoWay}"/>
                                                     </Border>
                                                 </DataTemplate>
                                             </GridViewColumn.CellTemplate>
@@ -633,11 +626,9 @@
                                                             GotMouseCapture="TextBox_GotMouseCapture"
                                                             KeyDown="TextBox_KeyDown"
                                                             MouseEnter="TextBox_MouseEnter"
-                                                            GotFocus="TextBox_GotFocus"
                                                             MouseLeave="TextBox_MouseLeave"
                                                             Style="{StaticResource StyleTextBoxBasic}"
-                                                            Text="{Binding Col5Char, Mode=TwoWay}"
-                                                            TextChanged="TextBox_TextChanged" />
+                                                            Text="{Binding Col5Char, Mode=TwoWay}"/>
                                                     </Border>
                                                 </DataTemplate>
                                             </GridViewColumn.CellTemplate>
@@ -657,7 +648,7 @@
                             Margin="0, 5, 5, 0"
                             Grid.Row="0"
                             Grid.Column="1">
-                        <Grid Margin="0, 0, 10, 10">
+                        <Grid Margin="0">
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="Auto"/>
                                 <RowDefinition Height="Auto"/>
@@ -676,7 +667,7 @@
                                         VerticalAlignment="Center"
                                         HorizontalAlignment="Center"
                                         Grid.Row="1"
-                                        Margin="15, 0, 15, 3">
+                                        Margin="15, 0, 0, 3">
                                 <Button Background="Transparent"
                                         Foreground="AliceBlue"
                                         BorderThickness="0"
@@ -716,7 +707,7 @@
                                       Grid.Column="0"
                                       ItemsSource="{Binding InputFilterObservableEntries}"
                                       ScrollViewer.CanContentScroll="False"
-                                      ScrollViewer.VerticalScrollBarVisibility="Auto"
+                                      ScrollViewer.VerticalScrollBarVisibility="Hidden"
                                       MaxHeight="{Binding ElementName=ListViewSubsTable, Path=Height}">
                                 <ListView.Style>
                                     <Style BasedOn="{StaticResource StyleListViewBasic}" TargetType="ListView" />
@@ -917,7 +908,7 @@
                                         FontStyle="Italic"
                                         VerticalContentAlignment="Center"
                                         HorizontalContentAlignment="Center"
-                                        Command="{Binding CommandModeEncrypt}"
+                                        Command="{Binding CommandOutputCopy}"
                                         Margin="0,0,5,0"
                                         Style="{StaticResource StyleButtonGeneric}">
                                     <TextBlock TextDecorations="Underline">
@@ -934,7 +925,7 @@
                                         FontStyle="Italic"
                                         VerticalContentAlignment="Center"
                                         HorizontalContentAlignment="Center"
-                                        Command="{Binding CommandModeDecrypt}"
+                                        Command="{Binding CommandOutputSave}"
                                         Margin="0"
                                         Style="{StaticResource StyleButtonGeneric}">
                                     <TextBlock TextDecorations="Underline">

@@ -48,7 +48,7 @@
                    VerticalAlignment="Center"
                    Foreground="Black"
                    Background="Transparent"
-                   Text="{Binding CharsRemainingSubsTblStr}">
+                   Text="{Binding CharsRemainingSubsTblStr, Mode=OneWay}">
         </TextBlock>
 
     </Grid>
