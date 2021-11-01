@@ -245,27 +245,33 @@ namespace CSharp_ADFGVX_Cipher_WPF.Models
             int numLongerSubstrings = strFiltered.Length % keyWord.Length;
 
             // Initialize field of StringBuilders
-            List<Tuple<int, char, int, StringBuilder>> stringBuilders = new();
+            List<Tuple<int, char, int, char[]>> stringBuilders = new();
             for (int i = 0; i < keyWord.Length; ++i)
             {
                 if (numLongerSubstrings > 0)
                 {
-                    stringBuilders.Add(new Tuple<int, char, int, StringBuilder>(i, keyWord[i], lenSubstring + 1, new StringBuilder(capacity: lenSubstring)));
+                    stringBuilders.Add(new Tuple<int, char, int, char[]>(i, keyWord[i], lenSubstring + 1, new char[lenSubstring + 1]));
                     --numLongerSubstrings;
                     continue;
                 }
 
-                stringBuilders.Add(new Tuple<int, char, int, StringBuilder>(i, keyWord[i], lenSubstring, new StringBuilder(capacity: lenSubstring)));
+                stringBuilders.Add(new Tuple<int, char, int, char[]>(i, keyWord[i], lenSubstring, new char[lenSubstring]));
             }
 
             // Order list
             stringBuilders = stringBuilders.OrderBy(entry => entry.Item2).ToList();
 
             // Split input
-            foreach (Tuple<int, char, int, StringBuilder> stringBuilder in stringBuilders)
+            int index = 0;
+            foreach (Tuple<int, char, int, char[]> stringBuilder in stringBuilders)
             {
-                stringBuilder.Item4.Append(strFiltered.Take(stringBuilder.Item3));
-                strFiltered = strFiltered.Remove(0, stringBuilder.Item3 - 1);
+                //stringBuilder.Item4.Append(strFiltered.Take(stringBuilder.Item3));
+                //strFiltered = strFiltered.Remove(0, stringBuilder.Item3 - 1);
+                for (int i = 0; i < stringBuilder.Item3; ++i)
+                {
+                    stringBuilder.Item4[i] = strFiltered[index];
+                    ++index;
+                }
             }
 
             // Reorder list
@@ -275,8 +281,8 @@ namespace CSharp_ADFGVX_Cipher_WPF.Models
             StringBuilder outputStrBuilder = new StringBuilder();
             for (int i = 0; i < origLen; ++i)
             {
-                outputStrBuilder.Append(stringBuilders[i % KeyWord.Length].Item4[0]);
-                _ = stringBuilders[i % KeyWord.Length].Item4.Remove(0, 1);
+                outputStrBuilder.Append(stringBuilders[i % KeyWord.Length].Item4[i / KeyWord.Length]);
+                //_ = stringBuilders[i % KeyWord.Length].Item4.Remove(0, 1);
             }
 
             return outputStrBuilder.ToString();
