@@ -136,17 +136,15 @@ namespace CSharp_ADFGVX_Cipher_WPF.Models
             throw new ArgumentOutOfRangeException();
         }
 
-        private char Substitute(in string str)
+        private char Substitute(in char c0, in char c1)
         {
-            char c0 = str[0];
-            char c1 = str[1];
             for (int i = 0; i < 6; ++i)
             {
                 for (int j = 0; j < 6; ++j)
                 {
                     if (c0.Equals(cipherName[i]) && c1.Equals(cipherName[j]))
                     {
-                        return cipherName[i];
+                        return SubstitutionTable[i, j];
                     }
                 }
             }
@@ -160,10 +158,10 @@ namespace CSharp_ADFGVX_Cipher_WPF.Models
             {
                 return string.Empty;
             }
-            StringBuilder stringBuilder = new StringBuilder(capacity: str.Length << 1);
+            StringBuilder stringBuilder = new(capacity: str.Length << 1);
             foreach (char c in FilterInputText(str))
             {
-                stringBuilder.Append(Substitute(c));
+                _ = stringBuilder.Append(Substitute(c));
             }
 
             return SortAndSplitByKeyWord(stringBuilder.ToString());
@@ -206,22 +204,36 @@ namespace CSharp_ADFGVX_Cipher_WPF.Models
         private string SortAndSplitByKeyWord(in string str)
         {
             // Length of substrings
-            int subStringLength = Convert.ToInt32(Math.Ceiling(str.Length / (double)keyWord.Length));
+            int lenSubstring = str.Length / keyWord.Length;
+            int numLongerSubstrings = str.Length % keyWord.Length;
 
             // Initialize field of StringBuilders
-            List<Tuple<char, StringBuilder>> stringBuilders = new();
+            List<Tuple<char, char[]>> stringBuilders = new();
             for (int i = 0; i < keyWord.Length; ++i)
             {
-                stringBuilders.Add(new Tuple<char, StringBuilder>(keyWord[i], new StringBuilder(capacity: subStringLength)));
+                if (numLongerSubstrings > 0)
+                {
+                    stringBuilders.Add(new Tuple<char, char[]>(keyWord[i], new char[lenSubstring + 1]));
+                    --numLongerSubstrings;
+                    continue;
+                }
+                stringBuilders.Add(new Tuple<char, char[]>(keyWord[i], new char[lenSubstring]));
             }
 
             // Split
             for (int j = 0; j < str.Length; ++j)
             {
-                _ = stringBuilders[j % keyWord.Length].Item2.Append(str[j]);
+                stringBuilders[j % keyWord.Length].Item2[j / keyWord.Length] = str[j];
             }
 
-            return string.Join(" ", stringBuilders.OrderBy(entry => entry.Item1).Select(entry => entry.Item2));
+            stringBuilders = stringBuilders.OrderBy(entry => entry.Item1).ToList();
+            StringBuilder stringBuilder = new(capacity: str.Length);
+            stringBuilders.ForEach(entry =>
+            {
+                _ = stringBuilder.Append(entry.Item2);
+            });
+
+            return stringBuilder.ToString();
         }
 
         private string Decrypt(in string str)
@@ -265,8 +277,6 @@ namespace CSharp_ADFGVX_Cipher_WPF.Models
             int index = 0;
             foreach (Tuple<int, char, int, char[]> stringBuilder in stringBuilders)
             {
-                //stringBuilder.Item4.Append(strFiltered.Take(stringBuilder.Item3));
-                //strFiltered = strFiltered.Remove(0, stringBuilder.Item3 - 1);
                 for (int i = 0; i < stringBuilder.Item3; ++i)
                 {
                     stringBuilder.Item4[i] = strFiltered[index];
@@ -278,11 +288,11 @@ namespace CSharp_ADFGVX_Cipher_WPF.Models
             stringBuilders = stringBuilders.OrderBy(entry => entry.Item1).ToList();
 
             // Build output
-            StringBuilder outputStrBuilder = new StringBuilder();
-            for (int i = 0; i < origLen; ++i)
+            StringBuilder outputStrBuilder = new();
+            for (int i = 0; i < origLen; i += 2)
             {
-                outputStrBuilder.Append(stringBuilders[i % KeyWord.Length].Item4[i / KeyWord.Length]);
-                //_ = stringBuilders[i % KeyWord.Length].Item4.Remove(0, 1);
+                _ = outputStrBuilder.Append(Substitute(stringBuilders[i % KeyWord.Length].Item4[i / KeyWord.Length],
+                    stringBuilders[(i + 1) % KeyWord.Length].Item4[(i + 1) / KeyWord.Length]));
             }
 
             return outputStrBuilder.ToString();

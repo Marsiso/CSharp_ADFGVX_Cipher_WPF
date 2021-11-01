@@ -86,7 +86,7 @@ namespace CSharp_ADFGVX_Cipher_WPF.Models
                 if (Input.Length > 0)
                 {
                     KeyWord = new string(Enumerable.
-                        Repeat(chars, Input.Length).
+                        Repeat(chars, Input.Length << 1).
                         Select(s => s.OrderBy(c => GetNextInt32(rnd)).First()).ToArray());
                     Output = Mode
                         ? Encrypt(Input)
