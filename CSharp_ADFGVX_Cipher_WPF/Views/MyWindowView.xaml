@@ -15,7 +15,7 @@
     MinWidth="527"
     MinHeight="800"
     Title="ADFG(V)X Cipher"
-    Icon="C:\Users\m_ols\Source\Repos\Marsiso\CSharp_ADFGVX_Cipher_WPF_Two\CSharp_ADFGVX_Cipher_WPF\Assets\encryption_logo_black.png"
+    Icon="C:\Users\molsak\Source\Repos\Marsiso\CSharp_ADFGVX_Cipher_WPF_Two\CSharp_ADFGVX_Cipher_WPF\Assets\encryption_logo_black.png"
     FontWeight="Bold"
     FontSize="16"
     Background="Transparent"
@@ -818,6 +818,23 @@
                                         FontStyle="Italic"
                                         VerticalContentAlignment="Center"
                                         HorizontalContentAlignment="Center"
+                                        Command="{Binding CommandInputClear}"
+                                        Margin="0,0,5,0"
+                                        Style="{StaticResource StyleButtonGeneric}">
+                                    <TextBlock TextDecorations="Underline">
+                                               Clear
+                                    </TextBlock>
+                                </Button>
+
+                                <Button Background="Transparent"
+                                        Foreground="AliceBlue"
+                                        BorderThickness="0"
+                                        BorderBrush="Transparent"
+                                        FontSize="12"
+                                        FontWeight="Bold"
+                                        FontStyle="Italic"
+                                        VerticalContentAlignment="Center"
+                                        HorizontalContentAlignment="Center"
                                         Command="{Binding CommandInputPaste}"
                                         Margin="0, 0, 5, 0"
                                         Style="{StaticResource StyleButtonGeneric}">
@@ -913,6 +930,23 @@
                                         Style="{StaticResource StyleButtonGeneric}">
                                     <TextBlock TextDecorations="Underline">
                                                Copy
+                                    </TextBlock>
+                                </Button>
+
+                                <Button Background="Transparent"
+                                        Foreground="AliceBlue"
+                                        BorderThickness="0"
+                                        BorderBrush="Transparent"
+                                        FontSize="12"
+                                        FontWeight="Bold"
+                                        FontStyle="Italic"
+                                        VerticalContentAlignment="Center"
+                                        HorizontalContentAlignment="Center"
+                                        Command="{Binding CommandOutputSwitch}"
+                                        Margin="0,0,5,0"
+                                        Style="{StaticResource StyleButtonGeneric}">
+                                    <TextBlock TextDecorations="Underline">
+                                               Switch
                                     </TextBlock>
                                 </Button>
 

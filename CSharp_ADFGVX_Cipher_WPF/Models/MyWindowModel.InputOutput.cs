@@ -70,6 +70,13 @@ namespace CSharp_ADFGVX_Cipher_WPF.Models
 
         public ICommand CommandInputPaste => new CommandHandler(() => Input = Clipboard.GetText(), () => true);
 
+        public ICommand CommandInputClear => new CommandHandler(() => Input = string.Empty, () => true);
+
+        public ICommand CommandOutputSwitch => new CommandHandler(() =>
+        {
+            Mode = !Mode;
+            Input = Output;
+        }, () => true);
         public string Input
         {
             get => input;
