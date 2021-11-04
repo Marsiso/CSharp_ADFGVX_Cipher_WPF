@@ -186,7 +186,7 @@ namespace CSharp_ADFGVX_Cipher_WPF.Models
 
         private string Encrypt(in string str)
         {
-            if (!ValidateSubstitutionTable() || !ValidateKeyWord())
+            if (!ValidateSubstitutionTable())
             {
                 return string.Empty;
             }
@@ -195,13 +195,17 @@ namespace CSharp_ADFGVX_Cipher_WPF.Models
             {
                 _ = stringBuilder.Append(Substitute(c));
             }
+            if (!ValidateKeyWord(stringBuilder.Length))
+            {
+                return string.Empty;
+            }
 
             return SortAndSplitByKeyWord(stringBuilder.ToString());
         }
 
-        private bool ValidateKeyWord()
+        private bool ValidateKeyWord(in int len)
         {
-            if (keyWord.Length > 0 && keyWord.Length <= Input.Length << 1)
+            if (keyWord.Length > 0 && keyWord.Length <= len)
             {
                 return true;
             }
@@ -267,7 +271,7 @@ namespace CSharp_ADFGVX_Cipher_WPF.Models
 
         private string Decrypt(in string str)
         {
-            if (!ValidateSubstitutionTable() || !ValidateKeyWord())
+            if (!ValidateSubstitutionTable())
             {
                 return string.Empty;
             }
@@ -280,7 +284,7 @@ namespace CSharp_ADFGVX_Cipher_WPF.Models
                     return s;
                 }));
 
-            if (strFiltered.Length % 2 > 0)
+            if (strFiltered.Length % 2 > 0 || !ValidateKeyWord(strFiltered.Length))
             {
                 return string.Empty;
             }

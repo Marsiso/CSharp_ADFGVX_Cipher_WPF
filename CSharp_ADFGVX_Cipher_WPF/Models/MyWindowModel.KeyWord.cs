@@ -80,14 +80,23 @@ namespace CSharp_ADFGVX_Cipher_WPF.Models
         {
             get => new CommandHandler(() =>
             {
+                if (!Mode)
+                {
+                    return;
+                }
+
                 RNGCryptoServiceProvider rnd = new RNGCryptoServiceProvider();
                 const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
                 if (Input.Length > 0)
                 {
-                    KeyWord = new string(Enumerable.
-                        Repeat(chars, Input.Length << 1).
-                        Select(s => s.OrderBy(c => GetNextInt32(rnd)).First()).ToArray());
+                    KeyWord = new string(Enumerable
+                        .Repeat(chars, Input
+                        .Where(c => encryptionCharFilter.ContainsKey(c))
+                        .Count() << 1)
+                        .Select(s => s.OrderBy(c => GetNextInt32(rnd))
+                        .First())
+                        .ToArray());
                     Output = Mode
                         ? Encrypt(Input)
                         : Decrypt(Input);

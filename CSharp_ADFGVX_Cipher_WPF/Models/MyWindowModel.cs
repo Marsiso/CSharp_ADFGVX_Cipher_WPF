@@ -51,6 +51,8 @@ namespace CSharp_ADFGVX_Cipher_WPF.Models
                         Output = string.Empty;
                     }
                 }
+
+                CharsRemainingSubsTblStr = string.Empty;
             }
         }, () => true);
 
@@ -88,6 +90,8 @@ namespace CSharp_ADFGVX_Cipher_WPF.Models
                         Output = string.Empty;
                     }
                 }
+
+                CharsRemainingSubsTblStr = string.Empty;
             }
         }, () => true);
 
@@ -126,7 +130,7 @@ namespace CSharp_ADFGVX_Cipher_WPF.Models
                 {'A', 'A'}, {'B', 'B'}, {'C', 'C'},
                 {'D', 'D'}, {'E', 'E'}, {'F', 'F'},
                 {'G', 'G'}, {'H', 'H'}, {'I', 'I'},
-                {'J', 'I'}, {'K', 'K'}, {'L', 'L'},
+                {'J', 'J'}, {'K', 'K'}, {'L', 'L'},
                 {'M', 'M'}, {'N', 'N'}, {'O', 'O'},
                 {'P', 'P'}, {'Q', 'Q'}, {'R', 'R'},
                 {'S', 'S'}, {'T', 'T'}, {'U', 'U'},
