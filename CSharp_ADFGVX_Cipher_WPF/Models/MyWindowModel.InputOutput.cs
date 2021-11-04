@@ -17,16 +17,20 @@ namespace CSharp_ADFGVX_Cipher_WPF.Models
         private string output;
         private bool mode;
         private readonly Dictionary<char, string> encryptionCharFilter;
+        private readonly Dictionary<char, string> decryptionCharFilter;
 
         public ICommand CommandModeEncrypt
-        { get => new CommandHandler(() => 
         { 
-            if (!Mode)
-            {
-                Mode = true;
+            get => new CommandHandler(() => 
+            { 
+                if (!Mode)
+                {
+                    Mode = true;
+                    IsLocalizationEnglish = isLocalizationEnglish;
+                }
                 Output = Encrypt(Input);
-            }
-        }, () => true); }
+            }, () => true); 
+        }
 
         public ICommand CommandModeDecrypt
         {
@@ -35,8 +39,9 @@ namespace CSharp_ADFGVX_Cipher_WPF.Models
                 if (Mode)
                 {
                     Mode = false;
-                    Output = Decrypt(Input);
+                    IsLocalizationEnglish = isLocalizationEnglish;
                 }
+                Output = Decrypt(Input);
             }, () => true);
         }
 
@@ -73,15 +78,19 @@ namespace CSharp_ADFGVX_Cipher_WPF.Models
         public ICommand CommandOutputSwitch => new CommandHandler(() =>
         {
             Mode = !Mode;
+            IsLocalizationEnglish = isLocalizationEnglish;
             Input = Output;
         }, () => true);
+
         public string Input
         {
             get => input;
             set
             {
                 SetValue(ref input, value);
-                Output = Mode ? Encrypt(value) : Decrypt(value);
+                Output = Mode 
+                    ? Encrypt(value) 
+                    : Decrypt(value);
             }
         }
 
@@ -130,8 +139,16 @@ namespace CSharp_ADFGVX_Cipher_WPF.Models
             const string V = "ADFGVX";
             for (int i = 0; i < 6; ++i)
             {
+                if (!isFullSize && i.Equals(4))
+                {
+                    continue;
+                }
                 for (int j = 0; j < 6; ++j)
                 {
+                    if (!isFullSize && j.Equals(4))
+                    {
+                        continue;
+                    }
                     if (c.Equals(substitutionTable[i, j]))
                     {
                         return $"{V[i]}{V[j]}";
@@ -139,7 +156,7 @@ namespace CSharp_ADFGVX_Cipher_WPF.Models
                 }
             }
 
-            return "\n\n";
+            throw new ArgumentOutOfRangeException();
         }
 
         private char Substitute(in char c0, in char c1)
@@ -147,8 +164,16 @@ namespace CSharp_ADFGVX_Cipher_WPF.Models
             const string V = "ADFGVX";
             for (int i = 0; i < 6; ++i)
             {
+                if (!isFullSize && i.Equals(4))
+                {
+                    continue;
+                }
                 for (int j = 0; j < 6; ++j)
                 {
+                    if (!isFullSize && j.Equals(4))
+                    {
+                        continue;
+                    }
                     if (c0.Equals(V[i]) && c1.Equals(V[j]))
                     {
                         return SubstitutionTable[i, j];
@@ -156,7 +181,7 @@ namespace CSharp_ADFGVX_Cipher_WPF.Models
                 }
             }
 
-            return '\n';
+            throw new ArgumentOutOfRangeException();
         }
 
         private string Encrypt(in string str)
@@ -247,12 +272,13 @@ namespace CSharp_ADFGVX_Cipher_WPF.Models
                 return string.Empty;
             }
 
-            string strFiltered = new(str.Where(c =>
-            {
-                const string V = "ADFGVX";
-                const string V1 = "ADFGX";
-                return isFullSize ? V.Contains(c) : V1.Contains(c);
-            }).ToArray());
+            string strFiltered = String.Join(String.Empty, str
+                .Where(c => decryptionCharFilter.ContainsKey(c))
+                .Select(c =>
+                {
+                    _ = decryptionCharFilter.TryGetValue(c, out string s);
+                    return s;
+                }));
 
             if (strFiltered.Length % 2 > 0)
             {
@@ -294,6 +320,14 @@ namespace CSharp_ADFGVX_Cipher_WPF.Models
                     charArrays[(i + 1) % KeyWord.Length].Item4[(i + 1) / KeyWord.Length]));
             }
 
+            if (!isFullSize)
+            {
+                foreach (var keyValuePair in encryptionCharFilter.Where(entry => Char.IsDigit(entry.Key)))
+                {
+                    outputStrBuilder.Replace(keyValuePair.Value, keyValuePair.Key.ToString());
+                }
+            }
+            outputStrBuilder.Replace("XMEZERAX", " ");
             return outputStrBuilder.ToString();
         }
     }

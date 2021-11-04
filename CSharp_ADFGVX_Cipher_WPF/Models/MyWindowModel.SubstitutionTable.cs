@@ -19,7 +19,8 @@ namespace CSharp_ADFGVX_Cipher_WPF.Models
         private string charsRemainingSubsTblStr;
 
         public ICommand CommandSubsTblRandomize { get => new CommandHandler(() => 
-        { 
+        {
+            EmptySubstitutionTable();
             RNGCryptoServiceProvider rnd = new RNGCryptoServiceProvider();
             char[] rndReorderedUsableChars = SubstitutionTableChars.
                 Where(entry => entry.Value.Equals(0)).
@@ -63,6 +64,9 @@ namespace CSharp_ADFGVX_Cipher_WPF.Models
             }
 
             CharsRemainingSubsTblStr = string.Empty;
+            Output = Mode
+                        ? Encrypt(Input)
+                        : Decrypt(Input);
         },() => true); }
 
         private void EmptySubstitutionTable()
@@ -78,7 +82,11 @@ namespace CSharp_ADFGVX_Cipher_WPF.Models
 
         public ICommand CommandSubsTblEmpty
         {
-            get => new CommandHandler(() => EmptySubstitutionTable(), () => true);
+            get => new CommandHandler(() =>
+            {
+                EmptySubstitutionTable();
+                Output = string.Empty;
+            }, () => true);
         }
 
         public ICommand CommandSubsTblMaxSize

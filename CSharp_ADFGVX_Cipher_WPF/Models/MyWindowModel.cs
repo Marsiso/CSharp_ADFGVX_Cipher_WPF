@@ -17,9 +17,79 @@ namespace CSharp_ADFGVX_Cipher_WPF.Models
         private static readonly IReadOnlyList<string> charAsStringEnglish = new string[] { "XNULAX", "XIEDNAX", "XDVAX", "XTRIX", "XCTYRYX", "XPETX", "XSESTX", "XSEDUMX", "XOSUMX", "XDEVETX" };
         private static readonly IReadOnlyList<string> charAsStringCzech = new string[] { "XNULAX", "XJEDNAX", "XDVAX", "XTRIX", "XCTYRYX", "XPETX", "XSESTX", "XSEDUMX", "XOSUMX", "XDEVETX" };
 
-        public ICommand CommandLocalizationEnglish => new CommandHandler(() => IsLocalizationEnglish = true, () => true);
+        public ICommand CommandLocalizationEnglish => new CommandHandler(() =>
+        {
+            IsLocalizationEnglish = true;
+            if (!isFullSize)
+            {
+                foreach (var entry in SubstitutionTableEntries)
+                {
+                    const char c = 'J';
+                    if (entry.Col0Char.Equals(c))
+                    {
+                        entry.Col0Char = ' ';
+                        Output = string.Empty;
+                    }
+                    else if (entry.Col1Char.Equals(c))
+                    {
+                        entry.Col1Char = ' ';
+                        Output = string.Empty;
+                    }
+                    else if (entry.Col2Char.Equals(c))
+                    {
+                        entry.Col2Char = ' ';
+                        Output = string.Empty;
+                    }
+                    else if (entry.Col3Char.Equals(c))
+                    {
+                        entry.Col3Char = ' ';
+                        Output = string.Empty;
+                    }
+                    else if (entry.Col5Char.Equals(c))
+                    {
+                        entry.Col5Char = ' ';
+                        Output = string.Empty;
+                    }
+                }
+            }
+        }, () => true);
 
-        public ICommand CommandLocalizationCzech => new CommandHandler(() => IsLocalizationEnglish = false, () => true);
+        public ICommand CommandLocalizationCzech => new CommandHandler(() =>
+        {
+            IsLocalizationEnglish = false;
+            if (!isFullSize)
+            {
+                foreach (var entry in SubstitutionTableEntries)
+                {
+                    const char c = 'Q';
+                    if (entry.Col0Char.Equals(c))
+                    {
+                        entry.Col0Char = ' ';
+                        Output = string.Empty;
+                    }
+                    else if (entry.Col1Char.Equals(c))
+                    {
+                        entry.Col1Char = ' ';
+                        Output = string.Empty;
+                    }
+                    else if (entry.Col2Char.Equals(c))
+                    {
+                        entry.Col2Char = ' ';
+                        Output = string.Empty;
+                    }
+                    else if (entry.Col3Char.Equals(c))
+                    {
+                        entry.Col3Char = ' ';
+                        Output = string.Empty;
+                    }
+                    else if (entry.Col5Char.Equals(c))
+                    {
+                        entry.Col5Char = ' ';
+                        Output = string.Empty;
+                    }
+                }
+            }
+        }, () => true);
 
         public Dictionary<char, int> SubstitutionTableChars { get => substitutionTableChars; }
 
@@ -89,6 +159,11 @@ namespace CSharp_ADFGVX_Cipher_WPF.Models
                 {'Ů', "U"}, {'Ý', "Y"} ,{'Ž', "Z"},
                 {' ', "XMEZERAX"}, {'\n', "XMEZERAX"}
             };
+            decryptionCharFilter = new Dictionary<char, string>
+            {
+                {'A', "A"}, {'Á', "A"}, {'D', "D"}, {'Ď', "D"}, {'F', "F"},
+                {'G', "G"}, {'V', "V"}, {'X', "X"}
+            };
             substitutionTableChars = new Dictionary<char, int>()
             {
                 {'A', 0}, {'B', 0}, {'C', 0},
@@ -153,6 +228,10 @@ namespace CSharp_ADFGVX_Cipher_WPF.Models
                     {
                         SubstitutionTableChars[keyValuePair.Key] = 0;
                     }
+                    if (!decryptionCharFilter.ContainsKey('V'))
+                    {
+                        decryptionCharFilter.Add('V', "V");
+                    }
                     break;
 
                 case (true, false):
@@ -172,6 +251,10 @@ namespace CSharp_ADFGVX_Cipher_WPF.Models
                         }
                         SubstitutionTableChars[keyValuePair.Key] = 0;
                     }
+                    if (decryptionCharFilter.ContainsKey('V'))
+                    {
+                        decryptionCharFilter.Remove('V');
+                    }
                     break;
 
                 case (false, false):
@@ -190,6 +273,10 @@ namespace CSharp_ADFGVX_Cipher_WPF.Models
                             continue;
                         }
                         SubstitutionTableChars[keyValuePair.Key] = 0;
+                    }
+                    if (decryptionCharFilter.ContainsKey('V'))
+                    {
+                        decryptionCharFilter.Remove('V');
                     }
                     break;
 
@@ -221,9 +308,19 @@ namespace CSharp_ADFGVX_Cipher_WPF.Models
         private void SetInputFilterObservable(ref ObservableCollection<InputFilterObservableEntry> store,
             ObservableCollection<InputFilterObservableEntry> value, [CallerMemberName] string name = null)
         {
-            foreach (KeyValuePair<char, string> keyValuePair in encryptionCharFilter)
+            if (Mode)
             {
-                value.Add(new InputFilterObservableEntry(keyValuePair.Key, keyValuePair.Value));
+                foreach (KeyValuePair<char, string> keyValuePair in encryptionCharFilter)
+                {
+                    value.Add(new InputFilterObservableEntry(keyValuePair.Key, keyValuePair.Value));
+                }
+            }
+            else
+            {
+                foreach (KeyValuePair<char, string> keyValuePair in decryptionCharFilter)
+                {
+                    value.Add(new InputFilterObservableEntry(keyValuePair.Key, keyValuePair.Value));
+                }
             }
 
             store = value;
